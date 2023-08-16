@@ -7,6 +7,8 @@ from nav_msgs.msg import Odometry
 import math
 from utils import gofai
 from tangent_bug import bug
+import numpy as np
+from bisect import bisect
 
 #RL libraries
 from gym import spaces
@@ -42,10 +44,10 @@ class LidarGoalGenerator:
         self.robot_y = 0.0
         
         # Flag to indicate if a goal is being navigated to
-        self.navigating_to_goal = False
+        self.navigating_to_goal = True
 
         #RL agent setup
-        self.state = spaces.Box(low=-1, high=1, shape=((1, 4 + 2 + 12))) #todo: check if it works with only a list
+        self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
         self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
@@ -53,16 +55,52 @@ class LidarGoalGenerator:
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent
         
-        min_distance = min(scan_data.ranges)
-        min_distance_idx = scan_data.ranges.index(min_distance)
-        angle = scan_data.angle_min + min_distance_idx * scan_data.angle_increment
-        blabla=[0]*12
+        distances = scan_data.ranges
+        angles = scan_data.angle_min + distances * scan_data.angle_increment
         
-        # Set flag to navigate to the goal
-        self.navigating_to_goal = True
+        
+        nb_of_sensors = 12
+        lidar_FOV =  math.ceil(scan_data.angle_max - scan_data.angle_min)
+
+        #spliting points into ranges of angles
+        theta = lidar_FOV/nb_of_sensors
+        for i in range(nb_of_sensors):
+            if i == 0:
+                thetas = [math.floor(left_angle)]
+            else:
+                thetas.append(thetas[i-1]+theta)
+
+        if len(angles) == 0: #lidar not seeing anything!
+            #np.concatenate((np.zeros(nb_of_sensors), np.array(thetas)/180.0))
+            return np.zeros(nb_of_sensors)
+
+        #print(f"angle ranges: {thetas}")
+        #print(f"angle left: {angle_left}")
+        #print(f"angle right: {angle_right}")
+        #print(f"number of points: {len(angles)}")
+
+        #adding points
+        distances_by_sensor = [[] for i in range(nb_of_sensors)]
+
+        for i, angle in enumerate(angles):
+            if (angle > left_angle and angle < right_angle): #place only the points inside the input FOV
+                ith_sensor = bisect(thetas,angle) #the bisect fnc finds where the angle would fit in the ranges we created (thetas)
+                distances_by_sensor[ith_sensor-1].append(distances[i])
+
+        sensors = [0 for x in range(nb_of_sensors)]
+
+        for i in range(nb_of_sensors):
+            if len(distances_by_sensor[i]) == 0: #missing lidar values!
+                sensors[i] = 66 #with no information, set to 66, which will be ignored
+                #print(f"missing lidar values in bucket {i}!")
+            else:
+                sensors[i] = min(distances_by_sensor[i])
+            #normalizing values and bounding them to [-1,1]
+            sensors[i] = np.log(sensors[i]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+            sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
-        self.state[6:18] = blabla
+        self.state[6:18] = sensors
         
     def pose_callback(self, odom_data):
         # Get current robot pose
