@@ -186,6 +186,9 @@ class LidarGoalGenerator:
         rate = rospy.Rate(8)  # 8 Hz
         
         while not rospy.is_shutdown():
+            self.publish_goal(3,1)
+
+
             if self.navigating_to_goal:
                 angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
                 angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
