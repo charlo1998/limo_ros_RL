@@ -216,7 +216,7 @@ class LidarGoalGenerator:
 
 if __name__ == '__main__':
     try:
-        lidar_goal_generator = LidarGoalGenerator()
+        lidar_goal_generator = LidarGoalGenerator('../model.pkl')
         lidar_goal_generator.run()
     except rospy.ROSInterruptException:
         pass
