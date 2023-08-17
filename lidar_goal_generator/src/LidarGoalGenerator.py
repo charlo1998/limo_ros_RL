@@ -61,7 +61,6 @@ class LidarGoalGenerator:
         distances = scan_data.ranges
         angles = scan_data.angle_min + distances * scan_data.angle_increment
         
-        
         left_angle=-180#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
         right_angle=180
 
@@ -106,6 +105,7 @@ class LidarGoalGenerator:
 
         #write processed data to state
         self.state[6:18] = sensors
+
         
     def pose_callback(self, odom_data):
         # Get current robot pose
@@ -180,7 +180,6 @@ class LidarGoalGenerator:
             linear = self.linear_speed*speed
             angular = 0
 
-
         return [linear, angular]
         
     def run(self):
@@ -202,7 +201,6 @@ class LidarGoalGenerator:
             else:
                 self.publish_velocity(0.0, 0.0)
 
-
             # Check if robot has reached the goal
             if self.navigating_to_goal:
                 distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
@@ -211,6 +209,7 @@ class LidarGoalGenerator:
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
             
             rate.sleep()
+            
 
 if __name__ == '__main__':
     try:
