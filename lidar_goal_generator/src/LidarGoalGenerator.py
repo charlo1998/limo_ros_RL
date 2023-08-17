@@ -25,10 +25,13 @@ class LidarGoalGenerator:
         self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
 
         # Robot goal subscriber
-        self.goal_sub = rospy.Subscriber('/goal', Odometry, self.goal_callback)
+        #self.goal_sub = rospy.Subscriber('/goal', Odometry, self.goal_callback)
         
         # Velocity publisher
         self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+
+        # goal publisher
+        self.goal_pub = rospy.Publisher('/goal', Odometry, queue_size=10)
         
         # Parameters
         self.goal_reached_distance = 0.2  # Distance threshold to consider the goal reached
@@ -36,8 +39,8 @@ class LidarGoalGenerator:
         self.angular_speed
         
         # Goal coordinates
-        self.goal_x = 0.0
-        self.goal_y = 0.0
+        self.goal_x = 3.0
+        self.goal_y = 1.0
         
         # Current robot pose
         self.robot_x = 0.0
@@ -120,13 +123,13 @@ class LidarGoalGenerator:
                 self.navigating_to_goal = False
                 self.publish_velocity(0.0, 0.0)  # Stop the robot
           
-    def goal_callback(self, odom_data):
-        # Get current robot pose
-        self.goal_x = odom_data.pose.pose.position.x
-        self.goal_y = odom_data.pose.pose.position.y
+    # def goal_callback(self, odom_data):
+    #     # Get current robot pose
+    #     self.goal_x = odom_data.pose.pose.position.x
+    #     self.goal_y = odom_data.pose.pose.position.y
 
-        #write robot pose to state
-        self.state[0:2] = [self.goal_x, self.goal_y]
+    #     #write robot pose to state
+    #     self.state[0:2] = [self.goal_x, self.goal_y]
         
     
     def publish_velocity(self, linear, angular):
@@ -134,6 +137,17 @@ class LidarGoalGenerator:
         vel_msg.linear.x = linear
         vel_msg.angular.z = angular
         self.vel_pub.publish(vel_msg)
+
+    def publish_goal(self, x, y):
+        goal_msg = Odometry()
+        goal_msg.pose.pose.position.x = self.goal_x
+        goal_msg.pose.pose.position.y = self.goal_y
+
+        #write robot pose to state directly
+        self.state[0:2] = [self.goal_x, self.goal_y]
+
+        self.goal_pub.publish(goal_msg)
+
 
     def action2velocity(self, action):
         """
