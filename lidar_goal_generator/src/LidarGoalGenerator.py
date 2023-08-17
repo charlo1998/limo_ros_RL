@@ -16,6 +16,13 @@ from stable_baselines3 import A2C
 class LidarGoalGenerator:
     def __init__(self, filepath):
         rospy.init_node('lidar_goal_generator', anonymous=True)
+
+        #RL agent setup
+        self.nb_of_sensors = 12
+        self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
+        self.model = A2C.load(filepath)
+        self.DWA = gofai()
+        self.bug = tangent_bug()
         
         # LiDAR subscriber
         self.lidar_sub = rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
@@ -48,12 +55,6 @@ class LidarGoalGenerator:
         # Flag to indicate if a goal is being navigated to
         self.navigating_to_goal = True
 
-        #RL agent setup
-        self.nb_of_sensors = 12
-        self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
-        self.model = A2C.load(filepath)
-        self.DWA = gofai()
-        self.bug = tangent_bug()
         
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent
