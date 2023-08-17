@@ -2,7 +2,6 @@ import math
 import numpy as np
 import settings
 import random
-import msgs
 import time
 
 

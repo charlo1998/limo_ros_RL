@@ -6,16 +6,15 @@ from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry
 import math
 from utils import gofai
-from tangent_bug import bug
+from tangent_bug import tangent_bug
 import numpy as np
 from bisect import bisect
 
 #RL libraries
-from gym import spaces
 from stable_baselines import A2C
 
 class LidarGoalGenerator:
-    def __init__(self):
+    def __init__(self, filepath):
         rospy.init_node('lidar_goal_generator', anonymous=True)
         
         # LiDAR subscriber
@@ -50,6 +49,7 @@ class LidarGoalGenerator:
         self.navigating_to_goal = True
 
         #RL agent setup
+        self.nb_of_sensors = 12
         self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
         self.model = A2C.load(filepath)
         self.DWA = gofai()
@@ -62,20 +62,22 @@ class LidarGoalGenerator:
         angles = scan_data.angle_min + distances * scan_data.angle_increment
         
         
-        nb_of_sensors = 12
+        left_angle=-180#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
+        right_angle=180
+
         lidar_FOV =  math.ceil(scan_data.angle_max - scan_data.angle_min)
 
         #spliting points into ranges of angles
-        theta = lidar_FOV/nb_of_sensors
-        for i in range(nb_of_sensors):
+        theta = 360/self.nb_of_sensors
+        for i in range(self.nb_of_sensors):
             if i == 0:
-                thetas = [math.floor(left_angle)]
+                thetas = [-180]
             else:
                 thetas.append(thetas[i-1]+theta)
 
         if len(angles) == 0: #lidar not seeing anything!
             #np.concatenate((np.zeros(nb_of_sensors), np.array(thetas)/180.0))
-            return np.zeros(nb_of_sensors)
+            return np.zeros(self.nb_of_sensors)
 
         #print(f"angle ranges: {thetas}")
         #print(f"angle left: {angle_left}")
@@ -83,16 +85,16 @@ class LidarGoalGenerator:
         #print(f"number of points: {len(angles)}")
 
         #adding points
-        distances_by_sensor = [[] for i in range(nb_of_sensors)]
+        distances_by_sensor = [[] for i in range(self.nb_of_sensors)]
 
         for i, angle in enumerate(angles):
             if (angle > left_angle and angle < right_angle): #place only the points inside the input FOV
                 ith_sensor = bisect(thetas,angle) #the bisect fnc finds where the angle would fit in the ranges we created (thetas)
                 distances_by_sensor[ith_sensor-1].append(distances[i])
 
-        sensors = [0 for x in range(nb_of_sensors)]
+        sensors = [0 for x in range(self.nb_of_sensors)]
 
-        for i in range(nb_of_sensors):
+        for i in range(self.nb_of_sensors):
             if len(distances_by_sensor[i]) == 0: #missing lidar values!
                 sensors[i] = 66 #with no information, set to 66, which will be ignored
                 #print(f"missing lidar values in bucket {i}!")
@@ -116,12 +118,6 @@ class LidarGoalGenerator:
         self.state[2:4] = [self.robot_vx, self.robot_vy]
         self.state[4:6] = [self.robot_x, self.robot_y]
           
-        # Check if robot has reached the goal
-        if self.navigating_to_goal:
-            distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
-            if distance_to_goal <= self.goal_reached_distance:
-                self.navigating_to_goal = False
-                self.publish_velocity(0.0, 0.0)  # Stop the robot
           
     # def goal_callback(self, odom_data):
     #     # Get current robot pose
@@ -155,24 +151,25 @@ class LidarGoalGenerator:
         there are 4 circles with different radius depending on how far the drone wants to go.
         """
         duration = 0.15
+        speed = self.linear_speed
 
-        if action < settings.action_discretization * 1:
+        if action < self.nb_of_sensors * 1:
             #short distance
-            speed = settings.base_speed
-        elif action < settings.action_discretization * 2:
+            speed *= 1
+        elif action < self.nb_of_sensors * 2:
             #medium short dist
-            speed = settings.base_speed*3
-        elif action < settings.action_discretization * 3:
+            speed *= 3
+        elif action < self.nb_of_sensors * 3:
             #medium long
-            speed = settings.base_speed*9
-        elif action < settings.action_discretization * 4:
+            speed *= 9
+        elif action < self.nb_of_sensors * 4:
             #long dist
-            speed = settings.base_speed*20
+            speed *= 20
         else:
             print("Wrong action index!")
 
-        action = action % settings.action_discretization
-        angle = 2*math.pi/settings.action_discretization*action
+        action = action % self.nb_of_sensors
+        angle = 2*math.pi/self.nb_of_sensors*action
         vx =  speed*math.cos(angle)
         vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
 
@@ -187,7 +184,7 @@ class LidarGoalGenerator:
         return [linear, angular]
         
     def run(self):
-        rate = rospy.Rate(10)  # 10 Hz
+        rate = rospy.Rate(8)  # 8 Hz
         
         while not rospy.is_shutdown():
             if self.navigating_to_goal:
@@ -199,11 +196,19 @@ class LidarGoalGenerator:
                 action = self.DWA.predict(self.state, local_goal)
 
                 #convert to linear and angular commands
-                [linear, angular] = action2velocity(action)
+                [linear, angular] = self.action2velocity(action)
 
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
+
+
+            # Check if robot has reached the goal
+            if self.navigating_to_goal:
+                distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
+                if distance_to_goal <= self.goal_reached_distance:
+                    self.navigating_to_goal = False
+                    self.publish_velocity(0.0, 0.0)  # Stop the robot
             
             rate.sleep()
 
