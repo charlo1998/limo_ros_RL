@@ -11,7 +11,7 @@ import numpy as np
 from bisect import bisect
 
 #RL libraries
-from stable_baselines3 import A2C
+from stable_baselines import A2C
 
 class LidarGoalGenerator:
     def __init__(self, filepath):
