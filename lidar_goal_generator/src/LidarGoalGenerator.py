@@ -64,8 +64,14 @@ class LidarGoalGenerator:
         indexes = np.arange(0,distances.size)
         angles = scan_data.angle_min + indexes * scan_data.angle_increment
 
-        print(f"LiDAR distances: {distances[0:10]}")
-        print(f"LiDAR angles: {angles[0:10]}")
+        print(f"lidar angle min: {scan_data.angle_min}")
+        print(f"lidar angle max: {scan_data.angle_max}")
+        print(f"lidar angle increment: {scan_data.angle_increment}")
+
+        print(f"LiDAR distances: {distances[0:5]}")
+        print(f"LiDAR distances: {distances[indexes.size-5:]}")
+        print(f"LiDAR angles: {angles[0:5]}")
+        print(f"LiDAR angles: {angles[indexes.size-5:]}")
         
         left_angle=-np.pi#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
         right_angle=np.pi
@@ -214,7 +220,7 @@ class LidarGoalGenerator:
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
 
-                self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                #self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
 
