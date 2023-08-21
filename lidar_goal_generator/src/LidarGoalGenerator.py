@@ -64,17 +64,18 @@ class LidarGoalGenerator:
         angles = scan_data.angle_min + distances * scan_data.angle_increment
 
         print(f"LiDAR distances: {distances}")
+        print(f"LiDAR angles: {angles}")
         
-        left_angle=-180#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
-        right_angle=180
+        left_angle=-np.pi#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
+        right_angle=np.pi
 
         lidar_FOV =  math.ceil(scan_data.angle_max - scan_data.angle_min)
 
         #spliting points into ranges of angles
-        theta = 360/self.nb_of_sensors
+        theta = 2*np.pi/self.nb_of_sensors
         for i in range(self.nb_of_sensors):
             if i == 0:
-                thetas = [-180]
+                thetas = [left_angle]
             else:
                 thetas.append(thetas[i-1]+theta)
 
