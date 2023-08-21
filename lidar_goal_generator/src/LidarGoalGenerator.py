@@ -62,13 +62,15 @@ class LidarGoalGenerator:
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
         
         distances = np.array(scan_data.ranges)
-        #removing zeros from lidar data
-        initial_size = distances.size
-        distances = distances[distances != 0.0]
-
         indexes = np.arange(0,distances.size)
         angles = scan_data.angle_min + indexes * scan_data.angle_increment + np.pi/2 #adjusting reference frame to mathematical convention
 
+
+        #removing zeros from lidar data
+        initial_size = distances.size
+        angles = angles[distances != 0.0]
+        distances = distances[distances != 0.0]
+        
         print(f"lidar ratio of good/bad samples: {initial_size/distances.size}")
 
         print(f"LiDAR distances: {distances[0:5]}")
