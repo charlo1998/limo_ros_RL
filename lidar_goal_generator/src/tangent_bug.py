@@ -23,6 +23,7 @@ class tangent_bug():
         self.foundPathCounter = 0
         self.tangent_direction = 1
         self.tangent_counter = 0
+        self.normalize = False
 
         # PID Constants
         self.setpoint = 1.4  # Setpoint distance in meters should be the same as dwa?
@@ -39,16 +40,17 @@ class tangent_bug():
 
     def predict(self, obs):
         obs = obs[0][0] #flattening the list
-        obs[6:settings.number_of_sensors+6] = 100**obs[6:settings.number_of_sensors+6] #reconverting from normalized to real values
-        obs[settings.number_of_sensors+6:] = obs[settings.number_of_sensors+6:]*np.pi
-        obs[1] = 100**obs[1]
-        obs[0] = obs[0]*np.pi #rad
-        sensors = obs[6:settings.number_of_sensors+6]
-        obs[2] = obs[2]*(settings.base_speed*20.0) #reconverting from normalized values
-        obs[3] = obs[3]*np.pi
-        obs[4:6] = obs[4:6]*50.0 
+        if self.normalize:
+            obs[6:settings.number_of_sensors+6] = 100**obs[6:settings.number_of_sensors+6] #reconverting from normalized to real values
+            obs[settings.number_of_sensors+6:] = obs[settings.number_of_sensors+6:]*np.pi
+            obs[1] = 100**obs[1]
+            obs[0] = obs[0]*np.pi #rad
+            obs[2] = obs[2]*(settings.base_speed*20.0) #reconverting from normalized values
+            obs[3] = obs[3]*np.pi
+            obs[4:6] = obs[4:6]*50.0 
 
-        
+        sensors = obs[6:settings.number_of_sensors+6]
+
         goal_angle = obs[0]
         goal_distance = obs[1]
         vel_angle = obs[3]
