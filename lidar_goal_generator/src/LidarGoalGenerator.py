@@ -5,6 +5,7 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry
 import math
+import settings
 from utils import gofai
 from tangent_bug import tangent_bug
 import numpy as np
@@ -41,7 +42,7 @@ class LidarGoalGenerator:
         
         # Parameters
         self.goal_reached_distance = 0.2  # Distance threshold to consider the goal reached
-        self.linear_speed = 0.2  # Linear speed for moving towards the goal
+        self.linear_speed = 0.1  # Linear speed for moving towards the goal
         self.angular_speed = 0.5
         
         # Goal coordinates
@@ -154,16 +155,16 @@ class LidarGoalGenerator:
         duration = 0.15
         speed = self.linear_speed
 
-        if action < self.nb_of_sensors * 1:
+        if action < settings.action_discretization * 1:
             #short distance
             speed *= 1
-        elif action < self.nb_of_sensors * 2:
+        elif action < settings.action_discretization * 2:
             #medium short dist
             speed *= 3
-        elif action < self.nb_of_sensors * 3:
+        elif action < settings.action_discretization * 3:
             #medium long
             speed *= 9
-        elif action < self.nb_of_sensors * 4:
+        elif action < settings.action_discretization * 4:
             #long dist
             speed *= 20
         else:
