@@ -190,7 +190,7 @@ class LidarGoalGenerator:
         vx =  speed*math.cos(angle)
         vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
 
-        if vy > 0.02:
+        if abs(vy) > 0.02:
             angular = -self.angular_speed*angle #check the sign on this
             linear =  0
         else:
