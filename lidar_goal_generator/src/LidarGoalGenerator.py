@@ -20,7 +20,7 @@ class LidarGoalGenerator:
         #RL agent setup
         self.nb_of_sensors = 12
         self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
-        self.model = A2C.load(filepath)
+        #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
         
