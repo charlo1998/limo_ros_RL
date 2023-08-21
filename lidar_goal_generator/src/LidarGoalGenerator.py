@@ -31,9 +31,6 @@ class LidarGoalGenerator:
         # Robot pose subscriber
         self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
 
-        #Robot pose publisher for resetting position at start of mission
-        self.init_pub = rospy.Publisher('/odom', Odometry, queue_size=10)
-
         # Robot goal subscriber
         #self.goal_sub = rospy.Subscriber('/goal', Odometry, self.goal_callback)
         
@@ -104,9 +101,6 @@ class LidarGoalGenerator:
                 #print(f"missing lidar values in bucket {i}!")
             else:
                 sensors[i] = min(distances_by_sensor[i])
-            #normalizing values and bounding them to [-1,1]
-            sensors[i] = np.log(sensors[i]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
-            sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
         self.state[0][0][6:18] = sensors
@@ -152,14 +146,6 @@ class LidarGoalGenerator:
 
         self.goal_pub.publish(goal_msg)
 
-    def reset_pose(self):
-        init_msg = Odometry()
-        init_msg.pose.pose.position.x = 0
-        init_msg.pose.pose.position.y = 0
-        init_msg.pose.pose.orientation.z = 0
-        init_msg.pose.pose.orientation.w = 0
-
-        self.init_pub.publish(init_msg)
 
     def action2velocity(self, action):
         """
@@ -201,7 +187,6 @@ class LidarGoalGenerator:
     def run(self):
         rate = rospy.Rate(8)  # 8 Hz
 
-        self.reset_pose()
         
         while not rospy.is_shutdown():
             self.publish_goal(3,1)
@@ -212,7 +197,9 @@ class LidarGoalGenerator:
                 #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
 
                 #normalize state and act
-
+                #normalizing values and bounding them to [-1,1]
+                #self.state[0][0][6:settings.number_of_sensors] = np.log(self.state[0][0][6:settings.number_of_sensors]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+                #self.state[0][0][6:settings.number_of_sensors] = min(1,max(-1,self.state[0][0][6:settings.number_of_sensors]))
                 #action, _states = self.model.predict(self.state)
 
                 local_goal = self.bug.predict(self.state)
