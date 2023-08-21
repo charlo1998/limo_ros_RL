@@ -105,7 +105,7 @@ class LidarGoalGenerator:
             sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
-        self.state[6:18] = sensors
+        self.state[0][0][6:18] = sensors
 
         
     def pose_callback(self, odom_data):
@@ -116,8 +116,8 @@ class LidarGoalGenerator:
         self.robot_vy = odom_data.twist.twist.linear.y
 
         #write robot pose and velocity to state
-        self.state[2:4] = [self.robot_vx, self.robot_vy]
-        self.state[4:6] = [self.robot_x, self.robot_y]
+        self.state[0][0][2:4] = [self.robot_vx, self.robot_vy]
+        self.state[0][0][4:6] = [self.robot_x, self.robot_y]
           
           
     # def goal_callback(self, odom_data):
