@@ -11,7 +11,7 @@ class tangent_bug():
     '''
 
     def __init__(self):
-        self.arc = 2*math.pi/settings.number_of_points #rad
+        self.arc = 2*math.pi/settings.number_of_sensors #rad
         self.d_leave = 150
         self.d_min = 149
         self.following_boundary = False
@@ -19,7 +19,7 @@ class tangent_bug():
         self.done =False
         self.min_dist = 150
         self.max_dist = 10
-        self.previous_obs = [3]*(settings.number_of_points+6)
+        self.previous_obs = [3]*(settings.number_of_sensors+6)
         self.foundPathCounter = 0
         self.tangent_direction = 1
         self.tangent_counter = 0
@@ -39,11 +39,11 @@ class tangent_bug():
 
     def predict(self, obs):
         obs = obs[0][0] #flattening the list
-        obs[6:settings.number_of_points+6] = 100**obs[6:settings.number_of_points+6] #reconverting from normalized to real values
-        obs[settings.number_of_points+6:] = obs[settings.number_of_points+6:]*np.pi
+        obs[6:settings.number_of_sensors+6] = 100**obs[6:settings.number_of_sensors+6] #reconverting from normalized to real values
+        obs[settings.number_of_sensors+6:] = obs[settings.number_of_sensors+6:]*np.pi
         obs[1] = 100**obs[1]
         obs[0] = obs[0]*np.pi #rad
-        sensors = obs[6:settings.number_of_points+6]
+        sensors = obs[6:settings.number_of_sensors+6]
         obs[2] = obs[2]*(settings.base_speed*20.0) #reconverting from normalized values
         obs[3] = obs[3]*np.pi
         obs[4:6] = obs[4:6]*50.0 
@@ -54,7 +54,7 @@ class tangent_bug():
         vel_angle = obs[3]
         vel_norm = obs[2]
 
-        angles =  obs[settings.number_of_points+6:]
+        angles =  obs[settings.number_of_sensors+6:]
         objects =[]
         orientations = []
         #create objects list to evaluate obstacles positions, and replace missing values with old observations.
