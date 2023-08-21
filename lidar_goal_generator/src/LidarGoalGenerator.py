@@ -47,7 +47,7 @@ class LidarGoalGenerator:
         
         # Goal coordinates
         self.goal_x = 1.0
-        self.goal_y = 3.0
+        self.goal_y = 0.3
         
         # Current robot pose
         self.robot_x = 0.0
@@ -227,6 +227,7 @@ class LidarGoalGenerator:
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
+                debug = input()
 
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
