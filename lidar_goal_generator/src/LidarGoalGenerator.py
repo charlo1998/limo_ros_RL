@@ -11,8 +11,7 @@ import numpy as np
 from bisect import bisect
 
 #RL libraries
-from gym import spaces
-from stable_baselines import A2C
+#from stable_baselines import A2C
 
 class LidarGoalGenerator:
     def __init__(self):
@@ -180,7 +179,8 @@ class LidarGoalGenerator:
                 angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
                 angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
 
-                action, _states = self.model.predict(self.state)
+                #action, _states = self.model.predict(self.state)
+
                 local_goal = self.bug.predict(self.state)
                 action = self.DWA.predict(self.state, local_goal)
 
