@@ -141,7 +141,7 @@ class LidarGoalGenerator:
         goal_msg.pose.pose.position.y = self.goal_y
 
         #write robot pose to state directly
-        self.state[0:2] = [self.goal_x, self.goal_y]
+        self.state[0][0][0:2] = [self.goal_x, self.goal_y]
 
         self.goal_pub.publish(goal_msg)
 
@@ -191,8 +191,8 @@ class LidarGoalGenerator:
 
 
             if self.navigating_to_goal:
-                angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
-                angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
+                #angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
+                #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
 
                 #action, _states = self.model.predict(self.state)
 
