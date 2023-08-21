@@ -54,9 +54,11 @@ class tangent_bug():
         vel_angle = obs[3]
         vel_norm = obs[2]
 
-        print(obs)
+        print(f"observation: {obs}")
 
-        angles =  obs[settings.number_of_sensors+6:]
+        #angles =  obs[settings.number_of_sensors+6:] #angles are not included for now
+        angles = np.linspace(-np.pi, np.pi, settings.number_of_sensors)
+        print(f"angles: {angles}")
         objects =[]
         orientations = []
         #create objects list to evaluate obstacles positions, and replace missing values with old observations.
