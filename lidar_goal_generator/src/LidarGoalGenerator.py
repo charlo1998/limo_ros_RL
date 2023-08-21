@@ -46,8 +46,8 @@ class LidarGoalGenerator:
         self.angular_speed = 0.5
         
         # Goal coordinates
-        self.goal_x = 3.0
-        self.goal_y = 1.0
+        self.goal_x = 1.0
+        self.goal_y = 3.0
         
         # Current robot pose
         self.robot_x = 0.0
@@ -60,7 +60,7 @@ class LidarGoalGenerator:
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent
         
-        distances = scan_data.ranges
+        distances = np.array(scan_data.ranges)
         angles = scan_data.angle_min + distances * scan_data.angle_increment
         
         left_angle=-180#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
