@@ -59,10 +59,11 @@ class LidarGoalGenerator:
         
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent
+        # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
-        angles = scan_data.angle_min + indexes * scan_data.angle_increment
+        angles = scan_data.angle_min + indexes * scan_data.angle_increment + np.pi/2 #adjusting reference frame to mathematical convention
 
         print(f"lidar angle min: {scan_data.angle_min}")
         print(f"lidar angle max: {scan_data.angle_max}")
