@@ -72,11 +72,10 @@ class LidarGoalGenerator:
         distances = distances[distances != 0.0]
         
         print(f"lidar ratio of good/bad samples: {initial_size/distances.size}")
-
-        print(f"LiDAR distances: {distances[0:5]}")
-        print(f"LiDAR distances: {distances[indexes.size-5:]}")
-        print(f"LiDAR angles: {angles[0:5]}")
-        print(f"LiDAR angles: {angles[indexes.size-5:]}")
+        # print(f"LiDAR distances: {distances[0:5]}")
+        # print(f"LiDAR distances: {distances[indexes.size-5:]}")
+        # print(f"LiDAR angles: {angles[0:5]}")
+        # print(f"LiDAR angles: {angles[indexes.size-5:]}")
         
         left_angle=-np.pi#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
         right_angle=np.pi
@@ -158,6 +157,7 @@ class LidarGoalGenerator:
 
         #write robot pose to state directly
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
+        print(f"relative goal: [theta,dist] = {[angle_to_goal, distance_to_goal]}")
 
         self.goal_pub.publish(goal_msg)
 
@@ -215,8 +215,10 @@ class LidarGoalGenerator:
                 #normalizing values and bounding them to [-1,1]
                 #self.state[0][0][6:settings.number_of_sensors] = np.log(self.state[0][0][6:settings.number_of_sensors]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
                 #self.state[0][0][6:settings.number_of_sensors] = min(1,max(-1,self.state[0][0][6:settings.number_of_sensors]))
-                #action, _states = self.model.predict(self.state)
+                
+                print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
 
+                #action, _states = self.model.predict(self.state)
                 local_goal = self.bug.predict(self.state)
                 action = self.DWA.predict(self.state, local_goal)
 
@@ -225,7 +227,7 @@ class LidarGoalGenerator:
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
 
-                #self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
 
