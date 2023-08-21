@@ -73,7 +73,7 @@ class tangent_bug():
 
         segments = self.compute_segments(objects)
 
-        print(f"sensors: {np.round(sensors,1)}")
+        #print(f"sensors: {np.round(sensors,1)}")
         print(f"bug objects: {np.round(objects,1)}")
         #print(f"bug distances: {np.round(objects,1)}")
         #print(f"segments: {segments}")

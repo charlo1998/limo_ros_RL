@@ -42,8 +42,8 @@ class LidarGoalGenerator:
         
         # Parameters
         self.goal_reached_distance = 0.2  # Distance threshold to consider the goal reached
-        self.linear_speed = 0.1  # Linear speed for moving towards the goal
-        self.angular_speed = 0.5
+        self.linear_speed = 0.08  # Linear speed for moving towards the goal
+        self.angular_speed = 0.3
         
         # Goal coordinates
         self.goal_x = 1.0
@@ -71,7 +71,7 @@ class LidarGoalGenerator:
         angles = angles[distances != 0.0]
         distances = distances[distances != 0.0]
         
-        print(f"lidar ratio of good/bad samples: {initial_size/distances.size}")
+        #print(f"lidar ratio of good/bad samples: {initial_size/distances.size}")
         # print(f"LiDAR distances: {distances[0:5]}")
         # print(f"LiDAR distances: {distances[indexes.size-5:]}")
         # print(f"LiDAR angles: {angles[0:5]}")
@@ -157,7 +157,7 @@ class LidarGoalGenerator:
 
         #write robot pose to state directly
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
-        print(f"relative goal: [theta,dist] = {[angle_to_goal, distance_to_goal]}")
+        print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
 
         self.goal_pub.publish(goal_msg)
 
@@ -223,9 +223,10 @@ class LidarGoalGenerator:
                 action = self.DWA.predict(self.state, local_goal)
 
                 #convert to linear and angular commands
-                print(f"dwa action: {action}")
+                
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
+                print("-------------------------------------------------")
 
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
