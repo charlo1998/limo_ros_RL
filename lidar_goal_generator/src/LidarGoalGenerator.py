@@ -200,7 +200,9 @@ class LidarGoalGenerator:
                 action = self.DWA.predict(self.state, local_goal)
 
                 #convert to linear and angular commands
+                print(f"dwa action: {action}")
                 [linear, angular] = self.action2velocity(action)
+                print(f"angular vel: {angular} linear vel: {linear}")
 
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:

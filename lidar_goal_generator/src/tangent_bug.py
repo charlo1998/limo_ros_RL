@@ -54,6 +54,8 @@ class tangent_bug():
         vel_angle = obs[3]
         vel_norm = obs[2]
 
+        print(obs)
+
         angles =  obs[settings.number_of_sensors+6:]
         objects =[]
         orientations = []
@@ -68,7 +70,7 @@ class tangent_bug():
 
         segments = self.compute_segments(objects)
 
-        #print(f"sensors: {np.round(sensors,1)}")
+        print(f"sensors: {np.round(sensors,1)}")
         #print(f"bug distances: {np.round(objects,1)}")
         #print(f"segments: {segments}")
         print_angles = [x*180/math.pi for x in orientations]
