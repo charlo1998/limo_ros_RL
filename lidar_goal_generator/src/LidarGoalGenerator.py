@@ -61,10 +61,11 @@ class LidarGoalGenerator:
         # Process LiDAR data for RL agent
         
         distances = np.array(scan_data.ranges)
-        angles = scan_data.angle_min + distances * scan_data.angle_increment
+        indexes = np.arange(0,distances.size)
+        angles = scan_data.angle_min + indexes * scan_data.angle_increment
 
-        #print(f"LiDAR distances: {distances}")
-        #print(f"LiDAR angles: {angles}")
+        print(f"LiDAR distances: {distances[0:10]}")
+        print(f"LiDAR angles: {angles[0:10]}")
         
         left_angle=-np.pi#keep the same convention as the agent learned, even tho the lidar won't fill the whole circle.
         right_angle=np.pi
