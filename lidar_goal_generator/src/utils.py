@@ -1,16 +1,7 @@
 import random
 import os
-import subprocess
 import numpy as np
-import psutil
-import json
 import settings
-import msgs
-import matplotlib.pyplot as plt
-import shutil
-import pandas as pd
-import subprocess
-import ast
 import math
 import time
 from bisect import bisect
@@ -86,7 +77,8 @@ class gofai():
         #print(f"angles: {angles}")
 
         # ---------------- random and greedy baselines -----------------------------
-        if(msgs.algo == "GOFAI"):
+        algo = "A2C-B"
+        if(algo == "GOFAI"):
             #chooses k closest sensors
             #k_sensors = 3
             #chosen_idx = np.argpartition(sensors, k_sensors)[:k_sensors]
