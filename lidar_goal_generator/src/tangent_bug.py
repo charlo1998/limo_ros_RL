@@ -72,6 +72,7 @@ class tangent_bug():
         segments = self.compute_segments(objects)
 
         print(f"sensors: {np.round(sensors,1)}")
+        print(f"bug objects: {objects}")
         #print(f"bug distances: {np.round(objects,1)}")
         #print(f"segments: {segments}")
         print_angles = [x*180/math.pi for x in orientations]
@@ -95,7 +96,8 @@ class tangent_bug():
 
         #find direction that minimizes distance to goal
         foundPath = False
-        min_heuristic = 150
+        min_heuristic = 150000000
+        best_idx=0
         for i, object in enumerate(objects):
             heuristic = self.compute_heuristic(object, orientations[i], goal_distance, goal_angle)
             if heuristic <= min_heuristic:
