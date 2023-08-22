@@ -4,6 +4,7 @@ import rospy
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import math
 import settings
 from utils import gofai
@@ -52,6 +53,7 @@ class LidarGoalGenerator:
         # Current robot pose
         self.robot_x = 0.0
         self.robot_y = 0.0
+        self.robot_yaw = 0.0
         
         # Flag to indicate if a goal is being navigated to
         self.navigating_to_goal = True
@@ -127,6 +129,10 @@ class LidarGoalGenerator:
         self.robot_vx = odom_data.twist.twist.linear.x
         self.robot_vy = odom_data.twist.twist.linear.y
 
+        orientation_q = odom_data.pose.pose.orientation
+        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+        (roll, pitch, self.robot_yaw ) = euler_from_quaternion (orientation_list)
+
         #write robot pose and velocity to state
         self.state[0][0][2:4] = [self.robot_vx, self.robot_vy]
         self.state[0][0][4:6] = [self.robot_x, self.robot_y]
@@ -155,8 +161,12 @@ class LidarGoalGenerator:
         angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
         distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
 
+        #correct with current orientation
+        angle_to_goal = angle_to_goal - self.robot_yaw
+
         #write robot pose to state directly
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
+        print(f"estimated yaw: {self.robot_yaw}")
         print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
 
         self.goal_pub.publish(goal_msg)
@@ -190,7 +200,7 @@ class LidarGoalGenerator:
         vx =  speed*math.cos(angle)
         vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
 
-        if abs(vy) > 0.02:
+        if abs(vy) > 0.05:
             angular = self.angular_speed*angle #check the sign on this
             linear =  0
         else:
