@@ -195,13 +195,13 @@ class LidarGoalGenerator:
         else:
             print("Wrong action index!")
 
-        action = action % self.nb_of_sensors
-        angle = np.pi/2-2*np.pi/self.nb_of_sensors*action #the negative sign is to go clockwise
-        print(f"pure reconverted angle: {angle}")
+        action = action % self.action_discretization
+        angle = np.pi/2-2*np.pi/self.action_discretization*action #the negative sign is to go clockwise
+        print(f"pure reconverted angle: {angle*180/np.pi}")
         #correcting for current yaw
         angle = angle - self.robot_yaw
         print(f"estimated yaw: {self.robot_yaw*180/np.pi}")
-        print(f"wanted angle corrected for yaw: {angle}")
+        print(f"wanted angle corrected for yaw: {angle*180/np.pi}")
         v_front =  speed*math.cos(angle)
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
         print(f"wanted v_front: {v_front}")
@@ -243,7 +243,6 @@ class LidarGoalGenerator:
 
 
                 #convert to linear and angular commands
-                
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
