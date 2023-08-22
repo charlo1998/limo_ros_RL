@@ -206,7 +206,7 @@ class LidarGoalGenerator:
         print(f"wanted vy: {vy}")
 
         if abs(vy) > 0.05:
-            angular = self.angular_speed*vy #check the sign on this
+            angular = -self.angular_speed*vy #check the sign on this
             linear =  0
         else:
             linear = self.linear_speed*speed
