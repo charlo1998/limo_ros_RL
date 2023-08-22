@@ -166,7 +166,7 @@ class LidarGoalGenerator:
 
         #write robot pose to state directly
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
-        print(f"estimated yaw: {self.robot_yaw}")
+        print(f"estimated yaw: {self.robot_yaw*180/np.pi}")
         print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
 
         self.goal_pub.publish(goal_msg)
@@ -175,7 +175,7 @@ class LidarGoalGenerator:
     def action2velocity(self, action):
         """
         discretization of the position actions: they are placed in a circle around the UAV. this circle is divided by 16 for the directions.
-        there are 4 circles with different radius depending on how far the drone wants to go.
+        there are 4 circles with different radius depending on how far the drone wants to go. the direction start in the front of the robot and go clockwise.
         """
         duration = 0.15
         speed = self.linear_speed
@@ -196,12 +196,14 @@ class LidarGoalGenerator:
             print("Wrong action index!")
 
         action = action % self.nb_of_sensors
-        angle = 2*math.pi/self.nb_of_sensors*action
+        angle = -2*math.pi/self.nb_of_sensors*action #the negative sign is to go clockwise
+        #correcting for current yaw
+        #angle = angle - self.robot_yaw
         vx =  speed*math.cos(angle)
         vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
 
         if abs(vy) > 0.05:
-            angular = self.angular_speed*angle #check the sign on this
+            angular = self.angular_speed*abs(vy) #check the sign on this
             linear =  0
         else:
             linear = self.linear_speed*speed
