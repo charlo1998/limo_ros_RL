@@ -163,11 +163,10 @@ class LidarGoalGenerator:
         distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
 
         #correct with current orientation
-        angle_to_goal = angle_to_goal - self.robot_yaw
+        #angle_to_goal = angle_to_goal - self.robot_yaw
 
         #write robot pose to state directly
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
-        print(f"estimated yaw: {self.robot_yaw*180/np.pi}")
         print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
 
         self.goal_pub.publish(goal_msg)
@@ -197,13 +196,14 @@ class LidarGoalGenerator:
             print("Wrong action index!")
 
         action = action % self.nb_of_sensors
-        angle = -2*math.pi/self.nb_of_sensors*action #the negative sign is to go clockwise
+        angle = np.pi/2-2*np.pi/self.nb_of_sensors*action #the negative sign is to go clockwise
         #correcting for current yaw
-        #angle = angle - self.robot_yaw
-        vx =  speed*math.cos(angle)
-        vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
-        print(f"wanted vx: {vx}")
-        print(f"wanted vy: {vy}")
+        angle = angle - self.robot_yaw
+        print(f"estimated yaw: {self.robot_yaw*180/np.pi}")
+        v_front =  speed*math.cos(angle)
+        v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
+        print(f"wanted v_front: {v_front}")
+        print(f"wanted v_side: {v_side}")
 
         if abs(vy) > 0.05:
             angular = -self.angular_speed*vy #check the sign on this
