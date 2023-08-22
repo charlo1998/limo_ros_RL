@@ -48,7 +48,7 @@ class LidarGoalGenerator:
         
         # Goal coordinates
         self.goal_x = 1.0
-        self.goal_y = 0.3
+        self.goal_y = 0.5
         
         # Current robot pose
         self.robot_x = 0.0
@@ -219,7 +219,7 @@ class LidarGoalGenerator:
 
         
         while not rospy.is_shutdown():
-            self.publish_goal(3,1)
+            self.publish_goal(1,0.5)
 
 
             if self.navigating_to_goal:
