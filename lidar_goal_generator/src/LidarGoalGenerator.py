@@ -201,9 +201,11 @@ class LidarGoalGenerator:
         #angle = angle - self.robot_yaw
         vx =  speed*math.cos(angle)
         vy = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
+        print(f"wanted vx: {vx}")
+        print(f"wanted vy: {vy}")
 
         if abs(vy) > 0.05:
-            angular = self.angular_speed*abs(vy) #check the sign on this
+            angular = self.angular_speed*vy #check the sign on this
             linear =  0
         else:
             linear = self.linear_speed*speed
