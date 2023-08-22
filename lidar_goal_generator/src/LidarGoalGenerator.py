@@ -232,10 +232,13 @@ class LidarGoalGenerator:
                 #self.state[0][0][6:settings.number_of_sensors] = min(1,max(-1,self.state[0][0][6:settings.number_of_sensors]))
                 
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
+                print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
                 #action, _states = self.model.predict(self.state)
                 local_goal = self.bug.predict(self.state)
+                print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 action = self.DWA.predict(self.state, local_goal)
+
 
                 #convert to linear and angular commands
                 
