@@ -209,10 +209,10 @@ class LidarGoalGenerator:
 
         if abs(v_side) > 0.15:
             angular = self.angular_speed*v_side #check the sign on this
-            linear =  0
-        else:
             linear = self.linear_speed*speed
-            angular = 0
+        else:
+            angular = self.angular_speed*v_side
+            linear = self.linear_speed*speed
 
         return [linear, angular]
         
