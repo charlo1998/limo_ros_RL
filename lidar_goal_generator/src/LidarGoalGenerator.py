@@ -195,8 +195,8 @@ class LidarGoalGenerator:
         else:
             print("Wrong action index!")
 
-        action = action % self.action_discretization
-        angle = np.pi/2-2*np.pi/self.action_discretization*action #the negative sign is to go clockwise
+        action = action % settings.action_discretization
+        angle = np.pi/2-2*np.pi/settings.action_discretization*action #the negative sign is to go clockwise
         print(f"pure reconverted angle: {angle*180/np.pi}")
         #correcting for current yaw
         angle = angle - self.robot_yaw
