@@ -67,6 +67,12 @@ class LidarGoalGenerator:
         indexes = np.arange(0,distances.size)
         angles = scan_data.angle_min + indexes * scan_data.angle_increment + np.pi/2 #adjusting reference frame to mathematical convention
 
+        #look at the min and max angle (it should be -np.pi to np.pi)
+        #add np.pi to get between o and 2pi
+        #add the robot_yaw, and loop back to the beginning with a modulo
+        angles = angles + np.pi + self.robot_yaw
+        angles = (angles*180/np.pi)*360
+        angles = angles*np.pi/180 - np.pi
 
         #removing zeros from lidar data
         initial_size = distances.size
