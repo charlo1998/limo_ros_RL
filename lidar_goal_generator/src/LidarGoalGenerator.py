@@ -243,8 +243,10 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
                 #action, _states = self.model.predict(self.state)
+                print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
+                print("--------------- bug end -------------------")
                 action = self.DWA.predict(self.state, local_goal)
 
 

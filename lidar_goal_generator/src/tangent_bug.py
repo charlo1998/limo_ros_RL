@@ -117,7 +117,7 @@ class tangent_bug():
         if foundPath == False and self.following_boundary == False:
             self.foundPathCounter += 1
             direction = math.pi/2 - goal_angle
-            #print("heuristic increased, go straight into goal, counter increased for boundary following")
+            print("heuristic increased, go straight into goal, counter increased for boundary following")
             goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]
 
         #if the heuristic didn't decrease after last couple actions, we need to enter into boundary following
@@ -133,7 +133,7 @@ class tangent_bug():
             
             #action = 12 - direction_idx + 32
             
-            #print(f"direction: {np.round(direction*180/math.pi,2)}")
+            print(f"direction: {np.round(direction*180/math.pi,2)}")
             if goal_distance > objects[best_idx]:
                 goal = [objects[best_idx]*math.cos(direction), objects[best_idx]*math.sin(direction)]  #drone body frame ref
             else:
@@ -147,11 +147,11 @@ class tangent_bug():
             closest_obstacle_idx = np.argmin(objects)
             tangent = orientations[closest_obstacle_idx]+math.pi/2*self.tangent_direction
 
-            #print(f"closest obstacle is at angle {orientations[closest_obstacle_idx]*180/math.pi} and distance {objects[closest_obstacle_idx]}. Tangent:  {tangent*180/math.pi}")
+            print(f"closest obstacle is at angle {orientations[closest_obstacle_idx]*180/math.pi} and distance {objects[closest_obstacle_idx]}. Tangent:  {tangent*180/math.pi}")
             command = self.calculate_pid_command(objects[closest_obstacle_idx])
             #print(f"PID command: {command}")
             tangent += command*self.tangent_direction
-            #print(f"corrected tangent: {tangent*180/math.pi}")
+            print(f"corrected tangent: {tangent*180/math.pi}")
             goal = [settings.mv_fw_spd_1*math.cos(tangent), settings.mv_fw_spd_1*math.sin(tangent)]
 
             object_to_avoid = segments[closest_obstacle_idx]
