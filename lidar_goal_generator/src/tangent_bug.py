@@ -257,7 +257,8 @@ class tangent_bug():
         y_goal = goal_dist*math.cos(goal_angle)
 
         if object_dist < goal_dist:
-            print("object in front of goal!")
+            if verbose:
+                print("object in front of goal!")
             x_obj = object_dist*math.cos(object_angle+self.arc/2)
             y_obj = object_dist*math.sin(object_angle+self.arc/2)
 
@@ -269,7 +270,8 @@ class tangent_bug():
 
             return max(0.1, dist_uav2obj + dist_obj2goal)
         else: #goal is in front of obstacle, heuristic is distance to goal after moving a bit into object_angle direction (0.1m/s)
-            print("goal in front of object!")
+            if verbose:
+                print("goal in front of object!")
             x_obj = 0.1*math.cos(object_angle+self.arc/2)
             y_obj = 0.1*math.sin(object_angle+self.arc/2)
 
