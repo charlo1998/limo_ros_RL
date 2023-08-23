@@ -46,6 +46,7 @@ class OdometryResetter:
     
     def run(self):
         rospy.spin()
+        print("running")
 
 if __name__ == '__main__':
     try:
