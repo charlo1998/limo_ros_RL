@@ -19,7 +19,7 @@ class tangent_bug():
         self.done =False
         self.min_dist = 150
         self.max_dist = 10
-        self.previous_obs = [3]*(settings.number_of_sensors+6)
+        
         self.foundPathCounter = 0
         self.tangent_direction = 1
         self.tangent_counter = 0
@@ -35,6 +35,10 @@ class tangent_bug():
         self.last_error = 0.0
         self.integral_error = 0.0
         self.sample_time = settings.mv_fw_dur  # PID loop sample time in seconds
+
+        #short-term memory
+        self.objects_last_updated =  [0]*settings.number_of_sensors
+        self.previous_obs = [3]*(settings.number_of_sensors+6)
 
 
 
@@ -66,8 +70,11 @@ class tangent_bug():
         #values over 99 are the sensors that are "removed" by the RL agent
         #any distance greater than the treshold will be ceiled.
         for i, sensor in enumerate(sensors):
-            if sensor >= 66:
+            if sensor >= 10 and self.objects_last_updated[i] < 5:
                 sensors[i] = self.previous_obs[i]
+                self.objects_last_updated[i] += 1
+            else:
+                self.objects_last_updated[i] = 0
             objects.append(min(sensors[i], self.max_dist))
             orientations.append(angles[i])
 
@@ -75,6 +82,7 @@ class tangent_bug():
 
         #print(f"sensors: {np.round(sensors,1)}")
         print(f"bug objects: {np.round(objects,1)}")
+        print(f"last updated: {self.objects_last_updated}")
         #print(f"bug distances: {np.round(objects,1)}")
         #print(f"segments: {segments}")
         print_angles = [x*180/math.pi for x in orientations]
