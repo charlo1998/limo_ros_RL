@@ -224,13 +224,13 @@ class LidarGoalGenerator:
         
     def run(self):
         rate = rospy.Rate(8)  # 8 Hz
-
+        initialized = False
         
         while not rospy.is_shutdown():
             self.publish_goal(1,0.5)
 
 
-            if self.navigating_to_goal:
+            if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven<t yet read data
                 #angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
                 #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
 
@@ -254,11 +254,16 @@ class LidarGoalGenerator:
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
-                debug = input()
+                
 
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
+
+            initialized=True
+
+            #waiting for human input to take another step
+            debug = input()
 
             # Check if robot has reached the goal
             if self.navigating_to_goal:
