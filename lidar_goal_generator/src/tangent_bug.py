@@ -111,7 +111,7 @@ class tangent_bug():
             self.min_dist = min_heuristic
             foundPath = True
             self.foundPathCounter = 0
-        heuristic = self.compute_heuristic(objects[best_idx], orientations[best_idx], goal_distance, goal_angle)
+        heuristic = self.compute_heuristic(objects[best_idx], orientations[best_idx], goal_distance, goal_angle, verbose=True)
         
 
         if foundPath == False and self.following_boundary == False:
@@ -251,12 +251,13 @@ class tangent_bug():
 
         return distMin, orientation
 
-    def compute_heuristic(self, object_dist, object_angle, goal_dist, goal_angle):
+    def compute_heuristic(self, object_dist, object_angle, goal_dist, goal_angle, verbose=False):
 
         x_goal = goal_dist*math.sin(goal_angle) #reference frame for angle to goal is inverted
         y_goal = goal_dist*math.cos(goal_angle)
 
         if object_dist < goal_dist:
+            print("object in front of goal!")
             x_obj = object_dist*math.cos(object_angle+self.arc/2)
             y_obj = object_dist*math.sin(object_angle+self.arc/2)
 
@@ -267,36 +268,18 @@ class tangent_bug():
             #print(f"object distance: {np.round(dist_uav2obj,2)}, obj to goal distance: {np.round(dist_obj2goal,2)} heuristic: {np.round(dist_uav2obj + dist_obj2goal,2)}")
 
             return max(0.1, dist_uav2obj + dist_obj2goal)
-        else: #goal is in front of obstacle, heuristic is distance to goal after moving a bit into object_angle direction (0.3m/s)
-            x_obj = 0.3*math.cos(object_angle+self.arc/2)
-            y_obj = 0.3*math.sin(object_angle+self.arc/2)
+        else: #goal is in front of obstacle, heuristic is distance to goal after moving a bit into object_angle direction (0.1m/s)
+            print("goal in front of object!")
+            x_obj = 0.1*math.cos(object_angle+self.arc/2)
+            y_obj = 0.1*math.sin(object_angle+self.arc/2)
 
             dist_obj2goal = np.sqrt((y_goal-y_obj)**2 + (x_goal-x_obj)**2)
-            #print(f"dist_obj2goal: {dist_obj2goal}")
-            #print(f"goal_dist: {goal_dist}")
+            print(f"dist_obj2goal + 0.1 m: {dist_obj2goal + 0.1}")
+            print(f"goal_dist: {goal_dist}")
 
             #print(f"Heuristic: {dist_obj2goal}")
-            return max(0.1, dist_obj2goal)
+            return max(0.1, dist_obj2goal + 0.1)
 
-    def compute_heuristic_verbose(self, object_dist, object_angle, goal_dist, goal_angle):
-
-        if object_dist < goal_dist:
-            x_goal = goal_dist*math.sin(goal_angle) #reference frame for angle to goal is inverted
-            y_goal = goal_dist*math.cos(goal_angle)
-
-            x_obj = object_dist*math.cos(object_angle+self.arc/2)
-            y_obj = object_dist*math.sin(object_angle+self.arc/2)
-
-            dist_uav2obj = object_dist
-            dist_obj2goal = np.sqrt((y_goal-y_obj)**2 + (x_goal-x_obj)**2)
-
-            print(f"angle considered: {object_angle*180/math.pi}")
-            print(f"object distance: {np.round(dist_uav2obj,2)}, obj to goal distance: {np.round(dist_obj2goal,2)} heuristic: {np.round(dist_uav2obj + dist_obj2goal,2)}")
-
-            return dist_uav2obj + dist_obj2goal
-        else: #goal is in front of obstacle
-            print(f"Heuristic: {goal_dist}")
-            return goal_dist
 
     def compute_segments(self, objects):
         """receives lidar data, and divides data into continuous segments. returns a list of the tags for each object.
