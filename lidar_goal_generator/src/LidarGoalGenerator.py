@@ -42,7 +42,7 @@ class LidarGoalGenerator:
         self.goal_pub = rospy.Publisher('/goal', Odometry, queue_size=10)
         
         # Parameters
-        self.goal_reached_distance = 0.2  # Distance threshold to consider the goal reached
+        self.goal_reached_distance = 0.1  # Distance threshold to consider the goal reached
         self.linear_speed = 0.08  # Linear speed for moving towards the goal
         self.angular_speed = 0.5
         
@@ -252,9 +252,9 @@ class LidarGoalGenerator:
                 [linear, angular] = self.action2velocity(action)
                 print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
-                debug = input()
+                #debug = input()
 
-                self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                #self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
 
