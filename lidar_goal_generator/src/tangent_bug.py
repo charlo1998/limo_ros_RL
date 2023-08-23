@@ -106,8 +106,8 @@ class tangent_bug():
                 min_heuristic = heuristic
                 direction = orientations[i]
                 best_idx = i
-        #print(f"previous heuristic: {self.min_dist}")
-        if min_heuristic <= self.min_dist-0.05:
+        print(f"previous heuristic: {self.min_dist}")
+        if min_heuristic <= self.min_dist-0.01:
             self.min_dist = min_heuristic
             foundPath = True
             self.foundPathCounter = 0
