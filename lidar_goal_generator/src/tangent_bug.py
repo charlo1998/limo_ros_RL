@@ -85,6 +85,7 @@ class tangent_bug():
         segments = self.compute_segments(objects)
 
         #print(f"sensors: {np.round(sensors,1)}")
+        print(f"updated sensors: {np.round(sensors,1)}")
         print(f"bug objects: {np.round(objects,1)}")
         print(f"last updated: {self.objects_last_updated}")
         #print(f"bug distances: {np.round(objects,1)}")
@@ -208,7 +209,7 @@ class tangent_bug():
             
 
 
-        self.previous_obs = sensors
+        self.previous_obs = objects
         #print(f"goal distance: {goal_distance} angle: {goal_angle*180/math.pi}")
         #print(f"goal (conventional coordinates): {goal}")
 
