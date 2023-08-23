@@ -70,11 +70,11 @@ class tangent_bug():
         #values over 99 are the sensors that are "removed" by the RL agent
         #any distance greater than the treshold will be ceiled.
 
-        print(f"previous obs: {self.previous_obs}")
-        print(f"sensors: {sensors}")
+        #print(f"previous obs: {self.previous_obs}")
+        #print(f"sensors: {sensors}")
 
         for i, sensor in enumerate(sensors):
-            if sensor >= 10 and self.objects_last_updated[i] < 15:
+            if sensor >= 10 and self.objects_last_updated[i] < 8:
                 sensors[i] = self.previous_obs[i]
                 self.objects_last_updated[i] += 1
             else:
@@ -85,7 +85,7 @@ class tangent_bug():
         segments = self.compute_segments(objects)
 
         #print(f"sensors: {np.round(sensors,1)}")
-        print(f"updated sensors: {np.round(sensors,1)}")
+        #print(f"updated sensors: {np.round(sensors,1)}")
         print(f"bug objects: {np.round(objects,1)}")
         print(f"last updated: {self.objects_last_updated}")
         #print(f"bug distances: {np.round(objects,1)}")
