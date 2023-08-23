@@ -276,8 +276,9 @@ class tangent_bug():
             y_obj = 0.1*math.sin(object_angle+self.arc/2)
 
             dist_obj2goal = np.sqrt((y_goal-y_obj)**2 + (x_goal-x_obj)**2)
-            print(f"dist_obj2goal + 0.1 m: {dist_obj2goal + 0.1}")
-            print(f"goal_dist: {goal_dist}")
+            if verbose:
+                print(f"dist_obj2goal + 0.1 m: {dist_obj2goal + 0.1}")
+                print(f"goal_dist: {goal_dist}")
 
             #print(f"Heuristic: {dist_obj2goal}")
             return max(0.1, dist_obj2goal + 0.1)
