@@ -267,16 +267,16 @@ class tangent_bug():
             #print(f"object distance: {np.round(dist_uav2obj,2)}, obj to goal distance: {np.round(dist_obj2goal,2)} heuristic: {np.round(dist_uav2obj + dist_obj2goal,2)}")
 
             return max(0.1, dist_uav2obj + dist_obj2goal)
-        else: #goal is in front of obstacle, heuristic is simply distance to goal
-            #x_obj = goal_dist*math.cos(object_angle+self.arc/2)
-            #y_obj = goal_dist*math.sin(object_angle+self.arc/2)
+        else: #goal is in front of obstacle, heuristic is distance to goal after moving a bit into object_angle direction (0.3m/s)
+            x_obj = 0.3*math.cos(object_angle+self.arc/2)
+            y_obj = 0.3*math.sin(object_angle+self.arc/2)
 
-            #dist_obj2goal = np.sqrt((y_goal-y_obj)**2 + (x_goal-x_obj)**2)
+            dist_obj2goal = np.sqrt((y_goal-y_obj)**2 + (x_goal-x_obj)**2)
             #print(f"dist_obj2goal: {dist_obj2goal}")
             #print(f"goal_dist: {goal_dist}")
 
             #print(f"Heuristic: {dist_obj2goal}")
-            return max(0.1, goal_dist)
+            return max(0.1, dist_obj2goal)
 
     def compute_heuristic_verbose(self, object_dist, object_angle, goal_dist, goal_angle):
 
