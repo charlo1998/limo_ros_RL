@@ -65,7 +65,7 @@ class LidarGoalGenerator:
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
-        angles = scan_data.angle_min + indexes * scan_data.angle_increment + np.pi/2 #adjusting reference frame to mathematical convention
+        angles = scan_data.angle_min + indexes * scan_data.angle_increment
 
         #look at the min and max angle (it should be -np.pi to np.pi)
         #add np.pi to get between o and 2pi
