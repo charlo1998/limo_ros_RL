@@ -123,7 +123,7 @@ class LidarGoalGenerator:
                 #print(f"missing lidar values in bucket {i}!")
             else:
                 sensors[i] = min(distances_by_sensor[i])
-                #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
+                sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
 
         #write processed data to state
         self.state[0][0][6:18] = sensors
@@ -165,7 +165,7 @@ class LidarGoalGenerator:
         goal_msg.pose.pose.position.x = self.goal_x
         goal_msg.pose.pose.position.y = self.goal_y
 
-        angle_to_goal = math.atan2(self.goal_x - self.robot_x, self.goal_y - self.robot_y)
+        angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
         distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
 
         #correct with current orientation
