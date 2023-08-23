@@ -123,7 +123,7 @@ class LidarGoalGenerator:
                 #print(f"missing lidar values in bucket {i}!")
             else:
                 sensors[i] = min(distances_by_sensor[i])
-                #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
+                sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
 
         #write processed data to state
         self.state[0][0][6:18] = sensors
@@ -254,7 +254,7 @@ class LidarGoalGenerator:
                 print("-------------------------------------------------")
                 #debug = input()
 
-                #self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
 
