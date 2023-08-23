@@ -212,7 +212,7 @@ class LidarGoalGenerator:
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
         print(f"wanted v_front: {v_front}")
         print(f"wanted v_side: {v_side}")
-        if v_front < -0.75: #do not allow high backwards velocities, turn around instead
+        if v_front < -10.0: #do not allow high backwards velocities, turn around instead
             linear = 0
             angular = self.angular_speed*v_side*1.5 #rotate faster
         else:
