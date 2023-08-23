@@ -71,7 +71,7 @@ class LidarGoalGenerator:
         #add np.pi to get between o and 2pi
         #add the robot_yaw, and loop back to the beginning with a modulo
         angles = angles + np.pi + self.robot_yaw
-        angles = (angles*180/np.pi)*360
+        angles = (angles*180/np.pi) % 360
         angles = angles*np.pi/180 - np.pi
 
         #removing zeros from lidar data
