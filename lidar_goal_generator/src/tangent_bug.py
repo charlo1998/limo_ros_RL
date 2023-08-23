@@ -101,12 +101,13 @@ class tangent_bug():
         min_heuristic = 150000000
         best_idx=0
         for i, object in enumerate(objects):
-            heuristic = self.compute_heuristic(object, orientations[i], goal_distance, goal_angle)
+            heuristic = self.compute_heuristic(object, orientations[i], goal_distance, goal_angle, verbose=True)
             if heuristic <= min_heuristic:
                 min_heuristic = heuristic
                 direction = orientations[i]
                 best_idx = i
         print(f"previous heuristic: {self.min_dist}")
+        print(f"new heuristic: {min_heuristic}")
         if min_heuristic <= self.min_dist-0.01:
             self.min_dist = min_heuristic
             foundPath = True
