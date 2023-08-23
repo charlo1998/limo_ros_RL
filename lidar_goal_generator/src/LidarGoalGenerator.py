@@ -165,7 +165,7 @@ class LidarGoalGenerator:
         goal_msg.pose.pose.position.x = self.goal_x
         goal_msg.pose.pose.position.y = self.goal_y
 
-        angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
+        angle_to_goal = math.atan2(self.goal_x - self.robot_x, self.goal_y - self.robot_y) # angle to goal need to be from y axis and in clock wise direction (airsim convention)
         distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
 
         #correct with current orientation

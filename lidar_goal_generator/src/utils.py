@@ -180,7 +180,7 @@ class gofai():
         #print(f"goal_distance: {global_goal_distance} angle: {goal_angle*180/math.pi}")
         print(f"dwa predicted destination: {[np.round(y_dest,3), np.round(x_dest,3)]}")
         #print(f"destination: {np.round(now,2)}")
-        #print(f"min distance in chosen trajectory: {minDist}")
+        print(f"min distance in chosen trajectory: {minDist}")
         #print(f"goal speed: {travel_speed}")
         #print(f"received speed: {np.round(np.sqrt(x_vel**2 + y_vel**2),2)}")
         print(f"dwa received pos: {[np.round(y_pos,3), np.round(x_pos,3)]}")
