@@ -180,8 +180,8 @@ class tangent_bug():
                 self.following_boundary_counter = 0
                 #if we've been following the boundary for a long time, try returning to normal state and switching tangent directions
                 self.tangent_counter +=1
-                if self.tangent_counter > 100:
-                    self.tangent_counter = -100
+                if self.tangent_counter > 20:
+                    self.tangent_counter = -20
                     self.tangent_direction = -1*self.tangent_direction
                     print("switching direction")
                     self.following_boundary = False
