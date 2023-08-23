@@ -101,7 +101,7 @@ class tangent_bug():
         min_heuristic = 150000000
         best_idx=0
         for i, object in enumerate(objects):
-            heuristic = self.compute_heuristic(object, orientations[i], goal_distance, goal_angle, verbose=True)
+            heuristic = self.compute_heuristic(object, orientations[i], goal_distance, goal_angle)
             if heuristic <= min_heuristic:
                 min_heuristic = heuristic
                 direction = orientations[i]
@@ -112,7 +112,7 @@ class tangent_bug():
             self.min_dist = min_heuristic
             foundPath = True
             self.foundPathCounter = 0
-        heuristic = self.compute_heuristic(objects[best_idx], orientations[best_idx], goal_distance, goal_angle, verbose=True)
+        heuristic = self.compute_heuristic(objects[best_idx], orientations[best_idx], goal_distance, goal_angle)
         
 
         if foundPath == False and self.following_boundary == False:
