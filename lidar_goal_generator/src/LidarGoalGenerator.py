@@ -13,7 +13,8 @@ import numpy as np
 from bisect import bisect
 
 #RL libraries
-#from stable_baselines import A2C
+import torch
+from model import PyTorchMlp
 
 class LidarGoalGenerator:
     def __init__(self, filepath):
@@ -22,6 +23,9 @@ class LidarGoalGenerator:
         #RL agent setup
         self.nb_of_sensors = 12
         self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
+        self.model = PyTorchMlp()
+        self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
+        self.model.eval()
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
@@ -241,6 +245,7 @@ class LidarGoalGenerator:
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
+                #action = np.array(th_model(th.from_numpy(observation).float()))
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
