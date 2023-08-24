@@ -243,6 +243,7 @@ class LidarGoalGenerator:
         #print(f"full state: {np.round(state,2)}")
         obs = state.copy()
         action = chosen_sectors.detach().numpy().flatten()
+        action = np.round((action+1)/2.0) #converting to 0s and 1s (temporary)
         print(f"agent action: {action}")
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
@@ -250,7 +251,7 @@ class LidarGoalGenerator:
         #print(f"wanted sensors: {np.sum(action)}")
         #find the k highest sensors, then save them for the dwa algorithm
         chosen_idx = np.argpartition(action, -settings.k_sensors)[-settings.k_sensors:]
-        sensor_output = np.ones(settings.number_of_sensors)
+        sensor_output = np.ones(settings.number_of_sensors)*100
         for idx in chosen_idx:
             sensor_score = action[idx]
             if (sensor_score >= 0.5):
@@ -313,6 +314,7 @@ class LidarGoalGenerator:
             if self.navigating_to_goal:
                 distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
                 if distance_to_goal <= self.goal_reached_distance:
+                    print("===================REACHED GOAL======================")
                     self.current_goal_idx = 1 - self.current_goal_idx
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
