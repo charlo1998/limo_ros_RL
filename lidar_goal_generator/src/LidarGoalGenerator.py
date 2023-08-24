@@ -51,8 +51,8 @@ class LidarGoalGenerator:
         self.angular_speed = 0.5
         
         # Goal coordinates
-        self.goals = [[2.0, 0.0], [0.0, 0.0]]
-        self.goal_x = 2.0
+        self.goals = [[1.7, 0.0], [0.0, 0.0]]
+        self.goal_x = 1.7
         self.goal_y = 0.0
         
         # Current robot pose
@@ -291,7 +291,7 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
-                self.state = self.apply_mask(self.state, chosen_sectors)
+                #self.state = self.apply_mask(self.state, chosen_sectors)
                 action = self.DWA.predict(self.state, local_goal)
 
 
