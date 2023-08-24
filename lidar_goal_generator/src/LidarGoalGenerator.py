@@ -240,7 +240,7 @@ class LidarGoalGenerator:
         """
         #print(f"full state: {np.round(state,2)}")
         obs = state.copy()
-        action = action.numpy().flatten()
+        action = action.detach().numpy().flatten()
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
         #print(f"action: {action}")
@@ -281,7 +281,7 @@ class LidarGoalGenerator:
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
-                chosen_sectors = np.array(self.model(torch.from_numpy(self.state).float()))
+                chosen_sectors = self.model(torch.from_numpy(self.state).float())
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
