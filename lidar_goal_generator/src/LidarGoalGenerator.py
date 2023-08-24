@@ -130,7 +130,7 @@ class LidarGoalGenerator:
                 #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
 
         #normalizing values and bounding them to [-1,1]
-        sensors = np.log(sensors+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+        sensors = np.log(np.array(sensors)+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
         sensors = min(1,max(-1,sensors))
 
         #write processed data to state
