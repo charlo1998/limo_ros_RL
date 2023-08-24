@@ -240,7 +240,7 @@ class LidarGoalGenerator:
         """
         #print(f"full state: {np.round(state,2)}")
         obs = state.copy()
-        action = action.detach().numpy().flatten()
+        action = chosen_sectors.detach().numpy().flatten()
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
         #print(f"action: {action}")
