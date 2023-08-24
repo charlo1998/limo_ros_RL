@@ -23,7 +23,7 @@ class tangent_bug():
         self.foundPathCounter = 0
         self.tangent_direction = 1
         self.tangent_counter = 0
-        self.normalize = False
+        self.normalize = True
 
         # PID Constants
         self.setpoint = 1.4  # Setpoint distance in meters should be the same as dwa?

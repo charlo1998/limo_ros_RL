@@ -129,6 +129,10 @@ class LidarGoalGenerator:
                 sensors[i] = min(distances_by_sensor[i])
                 #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
 
+        #normalizing values and bounding them to [-1,1]
+        sensors = np.log(sensors+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+        sensors = min(1,max(-1,sensors))
+
         #write processed data to state
         self.state[0][0][6:18] = sensors
 
@@ -144,9 +148,11 @@ class LidarGoalGenerator:
         orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
         (roll, pitch, self.robot_yaw ) = euler_from_quaternion (orientation_list)
 
-        #write robot pose and velocity to state
-        self.state[0][0][2:4] = [self.robot_vx, self.robot_vy]
-        self.state[0][0][4:6] = [self.robot_x, self.robot_y]
+        #normalize and write robot pose and velocity to state
+        vel_norm = min(np.sqrt(self.robot_vx**2+self.robot_vy**2)/(settings.base_speed*20),1) #max speed is 20*base speed (2m/s)
+        vel_angle = math.atan2(self.robot_vy,self.robot_vy)/math.pi
+        self.state[0][0][2:4] = [vel_norm, vel_angle]
+        self.state[0][0][4:6] = [self.robot_x/50, self.robot_y/50]
           
           
     # def goal_callback(self, odom_data):
@@ -175,9 +181,12 @@ class LidarGoalGenerator:
         #correct with current orientation
         #angle_to_goal = angle_to_goal - self.robot_yaw
 
-        #write robot pose to state directly
-        self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
+        #normalize and write robot pose to state directly
         print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
+        distance_to_goal = np.log10(distance_to_goal+0.0001)/np.log10(100) #this way gives more range to the smaller distances (large distances are less important).
+        distance_to_goal = min(1,max(-1,distance_to_goal))
+        angle_to_goal = angle_to_goal/np.pi #since it is already between [-180,180] and we want a linear transformation.
+        self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
 
         self.goal_pub.publish(goal_msg)
 
@@ -224,6 +233,38 @@ class LidarGoalGenerator:
             linear = self.linear_speed*v_front
 
         return [linear, angular]
+    
+    def apply_mask(self, state, chosen_sectors):
+        """
+        takes the full state and action as input, and returns a partial observation based on the chosen action
+        """
+        #print(f"full state: {np.round(state,2)}")
+        obs = state.copy()
+        action = action.numpy().flatten()
+        sensors = obs[0][0][6:settings.number_of_sensors+6]
+
+        #print(f"action: {action}")
+        #print(f"wanted sensors: {np.sum(action)}")
+        #find the k highest sensors, then save them for the dwa algorithm
+        chosen_idx = np.argpartition(action, -settings.k_sensors)[-settings.k_sensors:]
+        sensor_output = np.ones(settings.number_of_sensors)
+        for idx in chosen_idx:
+            sensor_score = action[idx]
+            if (sensor_score >= 0.5):
+                sensor_output[idx] = sensors[idx]
+        #for i, sensor in enumerate(sensors):
+        #    if sensor < 2.5:
+        #        sensor_output[i] = sensors[i]
+        #closest = np.argmin(sensors)
+        #sensor_output[closest] = 100
+
+        obs[0][0][6:settings.number_of_sensors+6] = sensor_output
+
+        #print(f" state: {state}")
+        #print(f"outputed obs: {obs}")
+
+        return obs
+
         
     def run(self):
         rate = rospy.Rate(8)  # 8 Hz
@@ -236,21 +277,17 @@ class LidarGoalGenerator:
             if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven<t yet read data
                 #angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
                 #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
-
-                #normalize state and act
-                #normalizing values and bounding them to [-1,1]
-                #self.state[0][0][6:settings.number_of_sensors] = np.log(self.state[0][0][6:settings.number_of_sensors]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
-                #self.state[0][0][6:settings.number_of_sensors] = min(1,max(-1,self.state[0][0][6:settings.number_of_sensors]))
                 
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
-                #action = np.array(th_model(th.from_numpy(observation).float()))
+                chosen_sectors = np.array(self.model(torch.from_numpy(self.state).float()))
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
+                self.state = self.apply_mask(self.state, chosen_sectors)
                 action = self.DWA.predict(self.state, local_goal)
 
 
