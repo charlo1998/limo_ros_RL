@@ -51,8 +51,9 @@ class LidarGoalGenerator:
         self.angular_speed = 0.5
         
         # Goal coordinates
-        self.goal_x = 1.0
-        self.goal_y = 0.5
+        self.goals = [[2.0, 0.0], [0.0, 0.0]]
+        self.goal_x = 2.0
+        self.goal_y = 0.0
         
         # Current robot pose
         self.robot_x = 0.0
@@ -61,6 +62,7 @@ class LidarGoalGenerator:
         
         # Flag to indicate if a goal is being navigated to
         self.navigating_to_goal = True
+        self.current_goal_idx = 0
 
         
     def lidar_callback(self, scan_data):
@@ -241,6 +243,7 @@ class LidarGoalGenerator:
         #print(f"full state: {np.round(state,2)}")
         obs = state.copy()
         action = chosen_sectors.detach().numpy().flatten()
+        print(f"agent action: {action}")
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
         #print(f"action: {action}")
@@ -310,7 +313,9 @@ class LidarGoalGenerator:
             if self.navigating_to_goal:
                 distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
                 if distance_to_goal <= self.goal_reached_distance:
-                    self.navigating_to_goal = False
+                    self.current_goal_idx = 1 - self.current_goal_idx
+                    self.goal_x = self.goals[self.current_goal_idx][0]
+                    self.goal_y = self.goals[self.current_goal_idx][1]
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
             
             rate.sleep()
