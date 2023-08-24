@@ -317,10 +317,13 @@ class LidarGoalGenerator:
                     print("                                                     ")
                     print("===================REACHED GOAL======================")
                     print("                                                     ")
+                    self.bug.done=True
                     self.current_goal_idx = 1 - self.current_goal_idx
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
+                else:
+                    self.bug.done=False
             
             rate.sleep()
             

@@ -41,7 +41,6 @@ class tangent_bug():
         self.previous_obs = [3]*(settings.number_of_sensors+6)
 
 
-
     def predict(self, obs):
         obs = obs[0][0] #flattening the list
         if self.normalize:
@@ -108,6 +107,9 @@ class tangent_bug():
             # PID Variables
             self.last_error = 0.0
             self.integral_error = 0.0
+            #short-term memory
+            self.objects_last_updated =  [0]*settings.number_of_sensors
+            self.previous_obs = [3]*(settings.number_of_sensors+6)
 
         #find direction that minimizes distance to goal
         foundPath = False
