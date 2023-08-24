@@ -87,7 +87,7 @@ class tangent_bug():
         #print(f"sensors: {np.round(sensors,1)}")
         #print(f"updated sensors: {np.round(sensors,1)}")
         print(f"bug objects: {np.round(objects,1)}")
-        print(f"last updated: {self.objects_last_updated}")
+        #print(f"last updated: {self.objects_last_updated}")
         #print(f"bug distances: {np.round(objects,1)}")
         #print(f"segments: {segments}")
         print_angles = [x*180/math.pi for x in orientations]
@@ -119,8 +119,8 @@ class tangent_bug():
                 min_heuristic = heuristic
                 direction = orientations[i]
                 best_idx = i
-        print(f"previous heuristic: {self.min_dist}")
-        print(f"new heuristic: {min_heuristic}")
+        #print(f"previous heuristic: {self.min_dist}")
+        #print(f"new heuristic: {min_heuristic}")
         if min_heuristic <= self.min_dist-0.01:
             self.min_dist = min_heuristic
             foundPath = True
@@ -147,7 +147,7 @@ class tangent_bug():
             
             #action = 12 - direction_idx + 32
             
-            print(f"direction: {np.round(direction*180/math.pi,2)}")
+            #print(f"direction: {np.round(direction*180/math.pi,2)}")
             if goal_distance > objects[best_idx]:
                 goal = [objects[best_idx]*math.cos(direction), objects[best_idx]*math.sin(direction)]  #drone body frame ref
             else:
@@ -165,7 +165,7 @@ class tangent_bug():
             command = self.calculate_pid_command(objects[closest_obstacle_idx])
             #print(f"PID command: {command}")
             tangent += command*self.tangent_direction
-            print(f"corrected tangent: {tangent*180/math.pi}")
+            #print(f"corrected tangent: {tangent*180/math.pi}")
             goal = [settings.mv_fw_spd_1*math.cos(tangent), settings.mv_fw_spd_1*math.sin(tangent)]
 
             object_to_avoid = segments[closest_obstacle_idx]

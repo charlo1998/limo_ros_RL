@@ -60,7 +60,7 @@ class gofai():
         x_goal = goal[0]
         y_goal = goal[1]
         global_goal_distance = np.sqrt(x_goal**2 + y_goal**2)
-        print(f"received goal (relative): {[x_goal,y_goal]}")
+        #print(f"received goal (relative): {[x_goal,y_goal]}")
 
         
         vel_angle = obs[3]
@@ -178,7 +178,7 @@ class gofai():
         #print(f"orientations: {np.round(orientations,2)}")
         #print(f"sensors: {np.round(sensors,1)}")
         #print(f"goal_distance: {global_goal_distance} angle: {goal_angle*180/math.pi}")
-        print(f"dwa predicted destination: {[np.round(y_dest,3), np.round(x_dest,3)]}")
+        #print(f"dwa predicted destination: {[np.round(y_dest,3), np.round(x_dest,3)]}")
         #print(f"destination: {np.round(now,2)}")
         print(f"min distance in chosen trajectory: {minDist}")
         print(f"safety term for chosen action: {safetyTerm}")

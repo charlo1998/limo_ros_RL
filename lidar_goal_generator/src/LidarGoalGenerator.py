@@ -297,7 +297,7 @@ class LidarGoalGenerator:
 
                 #convert to linear and angular commands
                 [linear, angular] = self.action2velocity(action)
-                print(f"angular vel: {angular} linear vel: {linear}")
+                #print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
                 
 
@@ -314,7 +314,9 @@ class LidarGoalGenerator:
             if self.navigating_to_goal:
                 distance_to_goal = math.sqrt((self.goal_x - self.robot_x)**2 + (self.goal_y - self.robot_y)**2)
                 if distance_to_goal <= self.goal_reached_distance:
+                    print("                                                     ")
                     print("===================REACHED GOAL======================")
+                    print("                                                     ")
                     self.current_goal_idx = 1 - self.current_goal_idx
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
