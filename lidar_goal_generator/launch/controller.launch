@@ -1,0 +1,3 @@
+<launch>
+  <node name="bug_controller_node" pkg="lidar_goal_generator" type="LidarGoalGenerator.py" output="screen"></node>
+</launch>
