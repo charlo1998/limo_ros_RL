@@ -299,14 +299,15 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
                 #chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
-                print(f"Observation: {self.state}")
+                #print(f"Observation: {self.state}")
                 chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
-                #self.state = self.apply_mask(self.state, chosen_sectors)
+                print(f"action: {chosen_sectors}")
+                self.state = self.apply_mask(self.state, chosen_sectors)
                 action = self.DWA.predict(self.state, local_goal)
 
 
@@ -321,8 +322,8 @@ class LidarGoalGenerator:
                 self.publish_velocity(0.0, 0.0)
             end = time.perf_counter()
             endCPU = time.process_time_ns()
-            print(f"processing time: {end-start}")
-            print(f"CPU processing time: {endCPU-startCPU}")
+            #print(f"processing time: {(end-start)*1000} ms")
+            #print(f"CPU processing time: {(endCPU-startCPU)/1000} muS")
             self.processing_times.append(end-start)
             self.CPU_processing_times.append(endCPU-startCPU)
             initialized=True
@@ -339,10 +340,11 @@ class LidarGoalGenerator:
                     print("                                                     ")
                     self.bug.done=True
                     self.current_goal_idx = 1 - self.current_goal_idx
-                    self.goal_x = self.goals[self.current_goal_idx][0]
-                    self.goal_y = self.goals[self.current_goal_idx][1]
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
                     self.mission_time = time.time() - self.mission_start
+
+                    #self.goal_x = self.goals[self.current_goal_idx][0]
+                    #self.goal_y = self.goals[self.current_goal_idx][1]
                 else:
                     self.bug.done=False
             
