@@ -260,7 +260,7 @@ class LidarGoalGenerator:
             action = np.round((action+1)/2.0) #converting to 0s and 1s (temporary)
         else: #cost function
             action = chosen_sectors
-        print(f"agent action: {action}")
+        print(f"mask action: {action}")
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
         #print(f"action: {action}")
@@ -311,7 +311,6 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
-                print(f"action: {chosen_sectors}")
                 self.state = self.apply_mask(self.state, chosen_sectors)
                 action = self.DWA.predict(self.state, local_goal)
 
