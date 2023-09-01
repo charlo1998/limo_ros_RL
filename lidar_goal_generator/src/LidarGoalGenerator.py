@@ -197,7 +197,7 @@ class LidarGoalGenerator:
         #angle_to_goal = angle_to_goal - self.robot_yaw
 
         #normalize and write robot pose to state directly
-        print(f"relative goal: [theta,dist] = {[angle_to_goal*180/np.pi, distance_to_goal]}")
+        print(f"relative goal: [theta,dist] = {[(np.pi/2-angle_to_goal-self.robot_yaw), distance_to_goal]}")
         distance_to_goal = np.log10(distance_to_goal+0.0001)/np.log10(100) #this way gives more range to the smaller distances (large distances are less important).
         distance_to_goal = min(1,max(-1,distance_to_goal))
         angle_to_goal = angle_to_goal/np.pi #since it is already between [-180,180] and we want a linear transformation.
@@ -295,9 +295,7 @@ class LidarGoalGenerator:
 
             start = time.perf_counter()
             startCPU = time.process_time_ns()
-            if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven<t yet read data
-                #angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
-                #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
+            if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven't yet read data
                 
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
