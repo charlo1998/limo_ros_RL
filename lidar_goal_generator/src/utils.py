@@ -218,8 +218,17 @@ class gofai():
 
 
 
-def cost_function(obs):
-    obs = obs[0][0]
+def cost_function(state):
+    #copy and de-normalize
+    obs = state[0][0].copy()
+    obs[6:settings.number_of_sensors+6] = 100**obs[6:settings.number_of_sensors+6] #reconverting from normalized to real values
+    obs[settings.number_of_sensors+6:] = obs[settings.number_of_sensors+6:]*np.pi
+    obs[1] = 100**obs[1]
+    obs[0] = obs[0]*np.pi #rad
+    obs[2] = obs[2]*(settings.base_speed*20.0) #reconverting from normalized values
+    obs[3] = obs[3]*np.pi
+    obs[4:6] = obs[4:6]*50.0 
+
     print("------------cost function---------------")
     angles =  np.arange(-np.pi,np.pi,np.pi/6)
     vel_angle = obs[3]
