@@ -31,21 +31,6 @@ class LidarGoalGenerator:
         self.DWA = gofai()
         self.bug = tangent_bug()
         
-        # LiDAR subscriber
-        self.lidar_sub = rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
-        
-        # Robot pose subscriber
-        self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
-
-        # Robot goal subscriber
-        #self.goal_sub = rospy.Subscriber('/goal', Odometry, self.goal_callback)
-        
-        # Velocity publisher
-        self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-
-        # goal publisher
-        self.goal_pub = rospy.Publisher('/goal', Odometry, queue_size=10)
-        
         # Parameters
         self.goal_reached_distance = 0.15  # Distance threshold to consider the goal reached
         self.linear_speed = 0.12  # Linear speed for moving towards the goal
@@ -71,6 +56,21 @@ class LidarGoalGenerator:
         self.mission_time = 0
         self.mission_start = time.time()
         self.distance_traveled = 0
+
+        # LiDAR subscriber
+        self.lidar_sub = rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
+        
+        # Robot pose subscriber
+        self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
+
+        # Robot goal subscriber
+        #self.goal_sub = rospy.Subscriber('/goal', Odometry, self.goal_callback)
+        
+        # Velocity publisher
+        self.vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+
+        # goal publisher
+        self.goal_pub = rospy.Publisher('/goal', Odometry, queue_size=10)
 
         
     def lidar_callback(self, scan_data):
@@ -299,6 +299,7 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
                 #chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
+                print(f"Observation: {self.state}")
                 chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")

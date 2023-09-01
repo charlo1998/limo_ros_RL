@@ -219,6 +219,7 @@ class gofai():
 
 
 def cost_function(obs):
+    obs = obs[0][0]
     angles =  np.arange(-np.pi,np.pi,np.pi/6)
     vel_angle = obs[3]
     velocity = obs[2]
