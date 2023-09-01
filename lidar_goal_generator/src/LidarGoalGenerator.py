@@ -33,7 +33,7 @@ class LidarGoalGenerator:
         
         # Parameters
         self.goal_reached_distance = 0.15  # Distance threshold to consider the goal reached
-        self.linear_speed = 0.12  # Linear speed for moving towards the goal
+        self.linear_speed = 0.1  # Linear speed for moving towards the goal
         self.angular_speed = 0.5
         
         # Goal coordinates
