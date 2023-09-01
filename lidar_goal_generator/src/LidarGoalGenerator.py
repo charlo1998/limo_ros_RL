@@ -7,10 +7,11 @@ from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import math
 import settings
-from utils import gofai
+from utils import gofai, cost_function
 from tangent_bug import tangent_bug
 import numpy as np
 from bisect import bisect
+import time
 
 #RL libraries
 import torch
@@ -63,6 +64,13 @@ class LidarGoalGenerator:
         # Flag to indicate if a goal is being navigated to
         self.navigating_to_goal = True
         self.current_goal_idx = 0
+
+        #metrics
+        self.processing_times = []
+        self.CPU_processing_times = []
+        self.mission_time = 0
+        self.mission_start = time.time()
+        self.distance_traveled = 0
 
         
     def lidar_callback(self, scan_data):
@@ -140,6 +148,10 @@ class LidarGoalGenerator:
 
         
     def pose_callback(self, odom_data):
+        #update distance traveled
+        delta_x = odom_data.pose.pose.position.x - self.robot_x
+        delta_y = odom_data.pose.pose.position.y - self.robot_y
+        self.distance_traveled += np.linalg.norm([delta_x, delta_y])
         # Get current robot pose
         self.robot_x = odom_data.pose.pose.position.x
         self.robot_y = odom_data.pose.pose.position.y
@@ -277,7 +289,8 @@ class LidarGoalGenerator:
         while not rospy.is_shutdown():
             self.publish_goal(1,0.5)
 
-
+            start = time.perf_counter()
+            startCPU = time.process_time_ns()
             if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven<t yet read data
                 #angle_to_goal = math.atan2(self.goal_y - self.robot_y, self.goal_x - self.robot_x)
                 #angular = angle_to_goal - math.atan2(math.sin(angle_to_goal - self.robot_yaw), math.cos(angle_to_goal - self.robot_yaw))
@@ -285,7 +298,8 @@ class LidarGoalGenerator:
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
-                chosen_sectors = self.model(torch.from_numpy(self.state).float())
+                #chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
+                chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
@@ -304,7 +318,12 @@ class LidarGoalGenerator:
                 self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
-
+            end = time.perf_counter()
+            endCPU = time.process_time_ns()
+            print(f"processing time: {end-start}")
+            print(f"CPU processing time: {endCPU-startCPU}")
+            self.processing_times.append(end-start)
+            self.CPU_processing_times.append(endCPU-startCPU)
             initialized=True
 
             #waiting for human input to take another step
@@ -322,6 +341,7 @@ class LidarGoalGenerator:
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
+                    self.mission_time = time.time() - self.mission_start
                 else:
                     self.bug.done=False
             
