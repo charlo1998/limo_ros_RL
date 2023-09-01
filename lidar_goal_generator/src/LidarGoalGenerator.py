@@ -27,6 +27,7 @@ class LidarGoalGenerator:
         self.model = PyTorchMlp()
         self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
         self.model.eval()
+        self.RL = False #switch between pytorch and cost function
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
@@ -254,8 +255,11 @@ class LidarGoalGenerator:
         """
         #print(f"full state: {np.round(state,2)}")
         obs = state.copy()
-        action = chosen_sectors.detach().numpy().flatten()
-        action = np.round((action+1)/2.0) #converting to 0s and 1s (temporary)
+        if self.RL: #convert the tensor output into an array
+            action = chosen_sectors.detach().numpy().flatten()
+            action = np.round((action+1)/2.0) #converting to 0s and 1s (temporary)
+        else: #cost function
+            action = chosen_sectors
         print(f"agent action: {action}")
         sensors = obs[0][0][6:settings.number_of_sensors+6]
 
@@ -298,9 +302,10 @@ class LidarGoalGenerator:
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
 
-                #chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
-                #print(f"Observation: {self.state}")
-                chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
+                if self.RL:
+                    chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
+                else:
+                    chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(self.state)
