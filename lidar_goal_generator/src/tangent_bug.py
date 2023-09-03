@@ -131,9 +131,14 @@ class tangent_bug():
         
 
         if foundPath == False and self.following_boundary == False:
-            self.foundPathCounter += 1
             direction = math.pi/2 - goal_angle
-            print("heuristic increased, go straight into goal, counter increased for boundary following")
+            print(f"best_idx angle: {orientations[best_idx]}")
+            print(f"direction: {direction}")
+            if objects[best_idx] < goal_distance:
+                self.foundPathCounter += 1
+                print("heuristic increased, go straight into goal, counter increased for boundary following")
+            else:
+                print("heuristic increased, but no obstacle blocking goal, going straight into goal.")
             goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]
 
         #if the heuristic didn't decrease after last couple actions, we need to enter into boundary following
