@@ -237,9 +237,9 @@ def cost_function(state):
     sensors = obs[6:12+6]
     closest = min(sensors)
 
-    print(f"observation: {np.round(obs,2)}")
-    print(f"vel_angle: {np.round(vel_angle*180/np.pi,1)}")
-    print(f"velocity: {np.round(velocity,2)}")
+    #print(f"observation: {np.round(obs,2)}")
+    #print(f"vel_angle: {np.round(vel_angle*180/np.pi,1)}")
+    #print(f"velocity: {np.round(velocity,2)}")
     #print(f"angles: {np.round(angles*180/np.pi,1)}")
     #print(f"angles relative to velocity: {np.round(angles_rel2vel*180/np.pi,1)}")
 
@@ -254,9 +254,9 @@ def cost_function(state):
 
     action[np.argwhere(costs > 0)] = 1.0
 
-    print(f"heading scores: {np.round(heading_scores,1)}")
-    print(f"proximity scores: {np.round(proximity_scores,1)}")
-    print(f"final scores: {np.round(costs,2)}")
-    print(f"final action: {action}")
+    #print(f"heading scores: {np.round(heading_scores,1)}")
+    #print(f"proximity scores: {np.round(proximity_scores,1)}")
+    #print(f"final scores: {np.round(costs,2)}")
+    #print(f"final action: {action}")
 
     return action

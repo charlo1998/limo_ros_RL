@@ -345,8 +345,8 @@ class LidarGoalGenerator:
                     self.publish_velocity(0.0, 0.0)  # Stop the robot
                     self.mission_time = time.time() - self.mission_start
 
-                    #self.goal_x = self.goals[self.current_goal_idx][0]
-                    #self.goal_y = self.goals[self.current_goal_idx][1]
+                    self.goal_x = self.goals[self.current_goal_idx][0]
+                    self.goal_y = self.goals[self.current_goal_idx][1]
                 else:
                     self.bug.done=False
             
