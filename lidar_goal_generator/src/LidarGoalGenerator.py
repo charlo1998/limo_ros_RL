@@ -368,9 +368,10 @@ def DWA(obs, goal, config, yaw):
     obstacles = obs[6:]
     ob = []
     for obstacle, angle in zip(obstacles,angles):
-        ob_x = obstacle*math.cos(angle)
-        ob_y = obstacle*math.sin(angle)
-        ob.append([ob_x, ob_y])
+        if obstacle < 100:
+            ob_x = obstacle*math.cos(angle)
+            ob_y = obstacle*math.sin(angle)
+            ob.append([ob_x, ob_y])
     ob = np.array(ob)
     u, predicted_trajectory = wheeled_dwa.dwa_control(x, config, goal, ob)
     return u
