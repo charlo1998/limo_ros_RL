@@ -318,9 +318,9 @@ class LidarGoalGenerator:
                 action = self.DWA.predict(self.state, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
 
-                [linear, angular], trajectory = DWA(self.state, local_goal, self.config, self.robot_yaw)
+                velocitiy_commands, trajectory = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 print(f"angular vel: {angular} linear vel: {linear}")
-                print(f"angular vel: {angular} linear vel: {linear} for wheeled dwa")
+                print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 print("-------------------------------------------------")
                 
 
