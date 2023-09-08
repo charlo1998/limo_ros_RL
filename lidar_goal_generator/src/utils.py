@@ -244,7 +244,7 @@ def cost_function(state):
     #print(f"angles relative to velocity: {np.round(angles_rel2vel*180/np.pi,1)}")
 
 
-    cost = np.ones(12)*1.35
+    cost = np.ones(12)*1.75
 
     heading_scores = np.cos(angles_rel2vel)*0.5
     proximity_scores = np.array([min(3/distance,10) for distance in sensors])
