@@ -326,7 +326,7 @@ class LidarGoalGenerator:
                 print("-------------------------------------------------")
                 
 
-                self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                self.publish_velocity(velocitiy_commands[0], velocitiy_commands[1])  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
             end = time.perf_counter()
