@@ -313,7 +313,7 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
-                self.state = self.apply_mask(self.state, chosen_sectors)
+                #self.state = self.apply_mask(self.state, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(self.state, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
