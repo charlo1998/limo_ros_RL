@@ -318,8 +318,9 @@ class LidarGoalGenerator:
                 action = self.DWA.predict(self.state, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
 
-                #[linear, angular] = DWA(self.state, local_goal, self.config)
-                #print(f"angular vel: {angular} linear vel: {linear}")
+                [u, trajectory] = DWA(self.state, local_goal, self.config, self.robot_yaw)
+                print(f"angular vel: {angular} linear vel: {linear}")
+                print(f"angular vel: {u[1]} linear vel: {u[0]} for wheeled dwa")
                 print("-------------------------------------------------")
                 
 
@@ -356,13 +357,18 @@ class LidarGoalGenerator:
             
             rate.sleep()
           
-def DWA(obs, goal, config):
+def DWA(obs, goal, config, yaw):
+    obs = obs[0][0]
     # goal position [x(m), y(m)]
     # initial state [x(m), y(m), yaw(rad), v(m/s), omega(rad/s)]
-    x = np.array([0.0, 0.0, math.pi / 8.0, 0.0, 0.0])
-    
-
-    ob = obs[6:]
+    x = np.array([obs[4], obs[5], yaw, obs[2], obs[3]])
+    angles = np.linspace(-np.pi, np.pi-np.pi/12, 12)
+    obstacles = obs[6:]
+    ob = []
+    for obstacle, angle in zip(obstacles,angles):
+        ob_x = obstacle*math.cos(angle)
+        ob_y = obstacle*math.sin(angle)
+        ob.append([ob_x, ob_y])
 
     u, predicted_trajectory = wheeled_dwa.dwa_control(x, config, goal, ob)
 
