@@ -373,7 +373,7 @@ def DWA(obs, goal, config, yaw):
             ob_y = obstacle*math.sin(angle)
             ob.append([ob_x, ob_y])
     ob = np.array(ob)
-    if ob.shape[0] == 1
+    if ob.shape[0] == 1:
         ob = np.reshape(ob, (1, 2))
     u, predicted_trajectory = wheeled_dwa.dwa_control(x, config, goal, ob)
     return u
