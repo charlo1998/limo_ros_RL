@@ -371,7 +371,7 @@ def DWA(obs, goal, config, yaw):
         ob.append([ob_x, ob_y])
     ob = np.array(ob)
     u, predicted_trajectory = wheeled_dwa.dwa_control(x, config, goal, ob)
-
+    print(f"u: {u}")
     return u
 
 if __name__ == '__main__':
