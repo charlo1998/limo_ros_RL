@@ -155,12 +155,12 @@ class tangent_bug():
             #action = 12 - direction_idx + 32
             
             #print(f"direction: {np.round(direction*180/math.pi,2)}")
-            if goal_distance > objects[best_idx]:
-                goal = [objects[best_idx]*math.cos(direction), objects[best_idx]*math.sin(direction)]  #drone body frame ref
-            else:
-                goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]  #drone body frame ref
+            # if goal_distance > objects[best_idx]: #why not just try to go past?
+            #     goal = [objects[best_idx]*math.cos(direction), objects[best_idx]*math.sin(direction)]  #drone body frame ref
+            # else:
+            #     goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]  #drone body frame ref
             #take moving action
-
+            goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]  #drone body frame ref
 
         else:
 
