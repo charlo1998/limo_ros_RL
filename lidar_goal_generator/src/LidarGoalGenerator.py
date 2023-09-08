@@ -9,6 +9,9 @@ import math
 import settings
 from utils import gofai, cost_function
 from tangent_bug import tangent_bug
+import dynamic_window_approach as wheeled_dwa
+from dynamic_window_approach import Config
+from dynamic_window_approach import RobotType
 import numpy as np
 from bisect import bisect
 import time
@@ -31,6 +34,7 @@ class LidarGoalGenerator:
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
+        self.config = Config()
         
         # Parameters
         self.goal_reached_distance = 0.15  # Distance threshold to consider the goal reached
@@ -310,11 +314,11 @@ class LidarGoalGenerator:
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
                 self.state = self.apply_mask(self.state, chosen_sectors)
+
                 action = self.DWA.predict(self.state, local_goal)
+                [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
 
-
-                #convert to linear and angular commands
-                [linear, angular] = self.action2velocity(action)
+                #[linear, angular] = DWA(self.state, local_goal, self.config)
                 #print(f"angular vel: {angular} linear vel: {linear}")
                 print("-------------------------------------------------")
                 
@@ -351,7 +355,18 @@ class LidarGoalGenerator:
                     self.bug.done=False
             
             rate.sleep()
-            
+          
+def DWA(obs, goal, config):
+    # goal position [x(m), y(m)]
+    # initial state [x(m), y(m), yaw(rad), v(m/s), omega(rad/s)]
+    x = np.array([0.0, 0.0, math.pi / 8.0, 0.0, 0.0])
+    
+
+    ob = obs[6:]
+
+    u, predicted_trajectory = wheeled_dwa.dwa_control(x, config, goal, ob)
+
+    return u
 
 if __name__ == '__main__':
     try:
