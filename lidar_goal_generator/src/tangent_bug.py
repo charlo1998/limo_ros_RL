@@ -217,6 +217,7 @@ class tangent_bug():
 
 
         self.previous_obs = objects
+        print(f"goal objects after method: {objects}")
         #print(f"goal distance: {goal_distance} angle: {goal_angle*180/math.pi}")
         #print(f"goal (conventional coordinates): {goal}")
 

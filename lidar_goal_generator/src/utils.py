@@ -104,7 +104,7 @@ class gofai():
             if sensor < 99:
                 if sensor >= 66:
                     sensors[i] = self.previous_obs[i]
-                objects.append(sensors[i])
+                objects.appendmax(0.1, sensors[i]))
                 orientations.append(angles[i])
 
         x_objects = []
