@@ -317,16 +317,17 @@ class LidarGoalGenerator:
                 start = time.perf_counter()
                 action = self.DWA.predict(self.state, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
+                #print(f"angular vel: {angular} linear vel: {linear}")
                 mid = time.perf_counter()
-                velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
+                #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
+                #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 end = time.perf_counter()
                 print(f"my dwa: {mid-start}, wheeled dwa: {end-mid}")
-                print(f"angular vel: {angular} linear vel: {linear}")
-                print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
+                
                 print("-------------------------------------------------")
                 
 
-                self.publish_velocity(velocitiy_commands[0], velocitiy_commands[1])  # P-controller for angular velocity
+                self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
             end = time.perf_counter()

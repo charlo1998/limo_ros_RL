@@ -38,13 +38,13 @@ class Config:
 
     def __init__(self):
         # robot parameter
-        self.max_speed = 1.0 # [m/s]
+        self.max_speed = 0.6 # [m/s]
         self.min_speed = -0.3  # [m/s]
-        self.max_yaw_rate = 1.2 # [rad/s]
+        self.max_yaw_rate = 0.75 # [rad/s]
         self.max_accel = 2.5  # [m/ss]
         self.max_delta_yaw_rate = 3.5  # [rad/ss]
         self.v_resolution = 0.1  # [m/s]
-        self.yaw_rate_resolution = 0.2 # [rad/s]
+        self.yaw_rate_resolution = 0.15 # [rad/s]
         self.dt = 0.128  # [s] Time tick for motion prediction
         self.predict_time = 2.0  # [s]
         self.to_goal_cost_gain = 0.15
