@@ -27,9 +27,9 @@ class LidarGoalGenerator:
         #RL agent setup
         self.nb_of_sensors = 12
         self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
-        self.model = PyTorchMlp()
-        self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
-        self.model.eval()
+        #self.model = PyTorchMlp()
+        #self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
+        #self.model.eval()
         self.RL = False #switch between pytorch and cost function
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
