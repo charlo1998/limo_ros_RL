@@ -138,8 +138,8 @@ class gofai():
 
             #computing new distance to goal
             travel_speed = min(2, settings.base_speed*3**(i//settings.action_discretization)) #travelling speed can be 0.1, 0.3, 0.9 m/s
-            x_dest = travel_speed*math.cos(direction)*settings.mv_fw_dur*0.66 + vel_norm*math.cos(vel_angle)*(0.33) # correcting for current speed since change in speed isn't instantaneous
-            y_dest = travel_speed*math.sin(direction)*0.66*settings.mv_fw_dur + vel_norm*math.sin(vel_angle)*(0.33)
+            x_dest = travel_speed*math.cos(theta)*settings.mv_fw_dur*0.66 + vel_norm*math.cos(vel_angle)*(0.33) # correcting for current speed since change in speed isn't instantaneous
+            y_dest = travel_speed*math.sin(theta)*0.66*settings.mv_fw_dur + vel_norm*math.sin(vel_angle)*(0.33)
 
             new_dist = np.sqrt((x_goal-x_dest)**2+(y_goal-y_dest)**2)
             #computing the closest obstacle to the trajectory
