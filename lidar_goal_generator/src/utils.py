@@ -31,9 +31,9 @@ class gofai():
 
     def __init__(self):
         self.arc = 2*math.pi/settings.number_of_sensors #rad
-        self.heading_coeff = 1
+        self.heading_coeff = 0.5
         self.safety_coeff = 5
-        self.safety_dist = 0.75
+        self.safety_dist = 1
         self.previous_obs = [3]*(settings.number_of_sensors+6)
         self.bug = tangent_bug()
 
@@ -160,11 +160,12 @@ class gofai():
                 safetyTerm = self.safety_coeff*(self.safety_dist - minDist)
                 action =i
                 direction = theta
+                print(f"direction: {np.round(theta*180/np.pi,1)} speed: {travel_speed} score: {np.round(benefit,2)}")
 
 
         self.previous_obs = sensors
-        print(f"min predicted distance in chosen dwa action: {mindistAction}")
-        print(f"heading term: {headingTerm} safety term: {safetyTerm}")
+        print(f"min predicted distance in chosen dwa action: {np.round(mindistAction,2)}")
+        print(f"heading term: {np.round(headingTerm,2)} safety term: {np.round(safetyTerm,2)}")
         #print(f"full loop action: {action}")
 
         ### -----------printing info on the chosen action-------------------------------------------------------------
