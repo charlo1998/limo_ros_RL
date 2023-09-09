@@ -61,6 +61,8 @@ class LidarGoalGenerator:
         self.mission_time = 0
         self.mission_start = time.time()
         self.distance_traveled = 0
+        self.observations = []
+        self.actions = []
 
         # LiDAR subscriber
         self.lidar_sub = rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
@@ -308,12 +310,13 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
+                self.observations.append(observation)
 
                 if self.RL:
                     chosen_sectors = self.model(torch.from_numpy(observation).float()) #inference profiling
                 else:
                     chosen_sectors = cost_function(observation) #performance profiling (closer to real agent behavior)
-                #action, _states = self.model.predict(self.state)
+                self.actions.append(chosen_sectors)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
@@ -360,6 +363,9 @@ class LidarGoalGenerator:
 
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
+
+                    np.save("observations.npy",np.array(self.observations),allow_pickle=True)
+                    np.save("actions.npy",np.array(self.observations),allow_pickle=True)
                 else:
                     self.bug.done=False
             
