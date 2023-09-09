@@ -363,9 +363,10 @@ class LidarGoalGenerator:
 
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
-
-                    np.save("observations.npy",np.array(self.observations),allow_pickle=True)
-                    np.save("actions.npy",np.array(self.observations),allow_pickle=True)
+                    with open("~/catkin_ws/src/limo_ros_RL/lidar_goal_generator/logging/observations.npy", "wb") as f:
+                        np.save(f,np.array(self.observations),allow_pickle=True)
+                    with open("~/catkin_ws/src/limo_ros_RL/lidar_goal_generator/logging/actions.npy", "wb") as f:
+                        np.save(f,np.array(self.observations),allow_pickle=True)
                 else:
                     self.bug.done=False
             
