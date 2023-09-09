@@ -43,9 +43,9 @@ class LidarGoalGenerator:
         self.angular_speed = 0.9
         
         # Goal coordinates
-        self.goals = [[2.8, 0.0], [0.0, 0.0]]
-        self.goal_x = 0.5
-        self.goal_y = 3.5
+        self.goals = [[1.5, 0.0], [0.0, 0.0]]
+        self.goal_x = 1.5
+        self.goal_y = 0.0
         
         # Current robot pose
         self.robot_x = 0.0

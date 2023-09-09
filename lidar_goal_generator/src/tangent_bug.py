@@ -71,9 +71,8 @@ class tangent_bug():
 
         #print(f"previous obs: {self.previous_obs}")
         #print(f"sensors: {sensors}")
-
         for i, sensor in enumerate(sensors):
-            if sensor >= 10 and self.objects_last_updated[i] < 15:
+            if sensor >= 10 and self.objects_last_updated[i] < 6:
                 self.objects_last_updated[i] += 1
                 sensors[i] = self.previous_obs[i]+0.05/self.objects_last_updated[i]
             else:
