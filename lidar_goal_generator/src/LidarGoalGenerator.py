@@ -39,7 +39,7 @@ class LidarGoalGenerator:
         # Parameters
         self.goal_reached_distance = 0.15  # Distance threshold to consider the goal reached
         self.linear_speed = 0.05  # Linear speed for moving towards the goal
-        self.angular_speed = 1
+        self.angular_speed = 0.6
         
         # Goal coordinates
         self.goals = [[2.0, 0.0], [0.0, 0.0]]
@@ -239,14 +239,18 @@ class LidarGoalGenerator:
         print(f"wanted angle corrected for yaw: {angle*180/np.pi}")
         v_front =  speed*math.cos(angle)
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
+        v_angular = self.angular_speed*angle
         #print(f"wanted v_front: {v_front}")
         #print(f"wanted v_side: {v_side}")
         if v_front < -10.0: #do not allow high backwards velocities, turn around instead
             linear = 0
-            angular = angle #rotate faster
+            angular = v_angular #rotate faster
             print(f"rotating to go backwards")
+        elif abs(angle) > 45: #if we are badly aligned with the goal, only rotate
+            linear = 0
+            angular = v_angular*0.8
         else:
-            angular = angle
+            angular = v_angular*0.5
             linear = v_front
 
         return [linear, angular]
