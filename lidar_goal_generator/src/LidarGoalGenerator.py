@@ -247,6 +247,7 @@ class LidarGoalGenerator:
         if v_front < -10.0: #do not allow high backwards velocities, turn around instead
             linear = 0
             angular = self.angular_speed*v_side*1.5 #rotate faster
+            print(f"rotating to go backwards")
         else:
             angular = self.angular_speed*v_side
             linear = self.linear_speed*v_front
@@ -317,7 +318,7 @@ class LidarGoalGenerator:
                 start = time.perf_counter()
                 action = self.DWA.predict(self.state, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
-                #print(f"angular vel: {angular} linear vel: {linear}")
+                print(f"angular vel: {angular} linear vel: {linear}")
                 mid = time.perf_counter()
                 #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
