@@ -160,8 +160,8 @@ class gofai():
                 safetyTerm = self.safety_coeff*(self.safety_dist - minDist)
                 action =i
                 direction = theta
-                if i > 16:
-                    print(f"direction: {np.round(theta*180/np.pi,1)} speed: {travel_speed} score: {np.round(benefit,2)}")
+                #if i > 16:
+                #   print(f"direction: {np.round(theta*180/np.pi,1)} speed: {travel_speed} score: {np.round(benefit,2)}")
 
 
         self.previous_obs = sensors
