@@ -17,8 +17,8 @@ from bisect import bisect
 import time
 
 #RL libraries
-import torch
-from model import PyTorchMlp
+#import torch
+#from model import PyTorchMlp
 
 class LidarGoalGenerator:
     def __init__(self, filepath):
@@ -38,8 +38,8 @@ class LidarGoalGenerator:
         
         # Parameters
         self.goal_reached_distance = 0.15  # Distance threshold to consider the goal reached
-        self.linear_speed = 0.1  # Linear speed for moving towards the goal
-        self.angular_speed = 0.5
+        self.linear_speed = 0.05  # Linear speed for moving towards the goal
+        self.angular_speed = 1
         
         # Goal coordinates
         self.goals = [[2.0, 0.0], [0.0, 0.0]]
@@ -215,7 +215,7 @@ class LidarGoalGenerator:
         discretization of the position actions: they are placed in a circle around the UAV. this circle is divided by 16 for the directions.
         there are 4 circles with different radius depending on how far the drone wants to go. the direction start in the front of the robot and go clockwise.
         """
-        duration = 0.15
+        duration = 0.125
         speed = self.linear_speed
 
         if action < settings.action_discretization * 1:
@@ -246,10 +246,10 @@ class LidarGoalGenerator:
         #print(f"wanted v_side: {v_side}")
         if v_front < -10.0: #do not allow high backwards velocities, turn around instead
             linear = 0
-            angular = self.angular_speed*v_side*1.5 #rotate faster
+            angular = self.angular_speed*angle #rotate faster
             print(f"rotating to go backwards")
         else:
-            angular = self.angular_speed*v_side
+            angular = self.angular_speed*angle
             linear = self.linear_speed*v_front
 
         return [linear, angular]
@@ -328,7 +328,7 @@ class LidarGoalGenerator:
                 print("-------------------------------------------------")
                 
 
-                self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                self.publish_velocity(1.0, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
             end = time.perf_counter()
