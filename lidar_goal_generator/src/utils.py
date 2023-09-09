@@ -73,7 +73,7 @@ class gofai():
 
         sensors = obs[6:settings.number_of_sensors+6] 
         angles = np.arange(-np.pi, np.pi, self.arc)
-        #print(f"sensors: {np.round(sensors,1)}")
+        print(f"sensors: {np.round(sensors,1)}")
         #print(f"angles: {angles}")
 
         # ---------------- random and greedy baselines -----------------------------
@@ -150,7 +150,7 @@ class gofai():
                     minDist = dist
 
             #computing the benefit
-            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(self.safety_dist - minDist)**3
+            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(self.safety_dist - minDist)**2
             #print(f"heading term: {global_goal_distance-new_dist}")
             #print(f"safety term: {self.safety_dist - minDist}")
             if benefit > bestBenefit:

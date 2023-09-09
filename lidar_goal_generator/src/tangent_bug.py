@@ -387,9 +387,9 @@ class tangent_bug():
                 corrected = True
             
    
-        #if corrected:
-        #    print(f"objects before: {np.round(objects,1)}")
-        #    print(f"corrected objects: {np.round(temp_objects,1)}")
+        if corrected:
+            print(f"objects before: {np.round(objects,1)}")
+            print(f"corrected objects: {np.round(temp_objects,1)}")
 
         objects[:] = temp_objects[:]
 
