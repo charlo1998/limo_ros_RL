@@ -236,8 +236,8 @@ class LidarGoalGenerator:
         #print(f"pure reconverted angle: {angle*180/np.pi}")
         #correcting for current yaw
         angle = angle - self.robot_yaw
-        print(f"estimated yaw: {self.robot_yaw*180/np.pi}")
-        print(f"wanted angle corrected for yaw: {angle*180/np.pi}")
+        print(f"estimated yaw: {np.round(self.robot_yaw*180/np.pi,1)}")
+        print(f"wanted angle corrected for yaw: {np.round(angle*180/np.pi,1)}")
         v_front =  speed*math.cos(angle)
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
         v_angular = self.angular_speed*math.sin(angle)
@@ -304,8 +304,8 @@ class LidarGoalGenerator:
             startCPU = time.process_time_ns()
             if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven't yet read data
                 
-                print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
-                print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
+                print(f"Robot pose: [x,y] = {[np.round(self.robot_x,2), np.round(self.robot_y,2)]}")
+                print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
 
@@ -316,18 +316,18 @@ class LidarGoalGenerator:
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(observation)
-                print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
+                print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np,round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
                 observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
-                print(f"angular vel: {angular} linear vel: {linear}")
+                print(f"angular vel: {np.round(angular,2)} linear vel: {np.round(linear,2)}")
                 mid = time.perf_counter()
                 #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 end = time.perf_counter()
-                print(f"my dwa: {mid-start}, wheeled dwa: {end-mid}")
+                print(f"dwa process time: {np.round(mid-start,3)}")
                 
                 print("-------------------------------------------------")
                 
