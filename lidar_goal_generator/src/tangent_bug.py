@@ -168,7 +168,7 @@ class tangent_bug():
             closest_obstacle_idx = np.argmin(objects)
             tangent = orientations[closest_obstacle_idx]+math.pi/2*self.tangent_direction
 
-            print(f"closest obstacle is at angle {np.round(orientations[closest_obstacle_idx]*180/math.pi,1)} and distance {np.round(objects[closest_obstacle_idx],2)}. Tangent:  {np.round(tangent*180/math.pi},1)")
+            print(f"closest obstacle is at angle {np.round(orientations[closest_obstacle_idx]*180/math.pi,1)} and distance {np.round(objects[closest_obstacle_idx],2)}. Tangent:  {np.round(tangent*180/math.pi,1)}")
             command = self.calculate_pid_command(objects[closest_obstacle_idx])
             #print(f"PID command: {command}")
             tangent += command*self.tangent_direction
