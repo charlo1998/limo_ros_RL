@@ -26,8 +26,8 @@ class LidarGoalGenerator:
         rospy.init_node('lidar_goal_generator', anonymous=True)
 
         #RL agent setup
-        self.nb_of_sensors = 12
-        self.state = np.zeros((1, 1, 4 + 2 + 12)) #todo: check if it works with only a list
+        self.nb_of_sensors = 60
+        self.state = np.zeros((1, 1, 4 + 2 + 60)) #todo: check if it works with only a list
         #self.model = PyTorchMlp()
         #self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
         #self.model.eval()
@@ -383,7 +383,7 @@ def DWA(obs, goal, config, yaw):
     # goal position [x(m), y(m)]
     # initial state [x(m), y(m), yaw(rad), v(m/s), omega(rad/s)]
     x = np.array([obs[4], obs[5], yaw, obs[2], obs[3]])
-    angles = np.linspace(-np.pi, np.pi-np.pi/12, 12)
+    angles = np.linspace(-np.pi, np.pi-np.pi/60, 60)
     obstacles = obs[6:]
     ob = []
     for obstacle, angle in zip(obstacles,angles):
