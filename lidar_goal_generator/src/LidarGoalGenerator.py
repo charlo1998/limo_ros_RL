@@ -44,8 +44,8 @@ class LidarGoalGenerator:
         
         # Goal coordinates
         self.goals = [[2.8, 0.0], [0.0, 0.0]]
-        self.goal_x = 2.8
-        self.goal_y = 0.0
+        self.goal_x = 0.5
+        self.goal_y = 3.5
         
         # Current robot pose
         self.robot_x = 0.0
@@ -248,11 +248,11 @@ class LidarGoalGenerator:
         #print(f"wanted v_side: {v_side}")
         if v_front < -0.1: #do not allow high backwards velocities, turn around instead
             linear = 0
-            angular = v_angular*1.2 #rotate faster
+            angular = v_angular*1.5 #rotate faster
             print(f"rotating to go backwards")
         elif abs(angle) > 45: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
-            angular = v_angular
+            angular = v_angular*1.3
         else:
             angular = v_angular*0.8
             linear = v_front
