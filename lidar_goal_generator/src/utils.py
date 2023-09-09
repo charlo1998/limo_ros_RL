@@ -31,9 +31,9 @@ class gofai():
 
     def __init__(self):
         self.arc = 2*math.pi/settings.number_of_sensors #rad
-        self.heading_coeff = 1
-        self.safety_coeff = 1
-        self.safety_dist = 1
+        self.heading_coeff = 1.5
+        self.safety_coeff = 0.75
+        self.safety_dist = 0.9
         self.previous_obs = [3]*(settings.number_of_sensors+6)
         self.bug = tangent_bug()
 
@@ -160,7 +160,8 @@ class gofai():
                 safetyTerm = self.safety_coeff*(self.safety_dist - minDist)
                 action =i
                 direction = theta
-                #print(f"direction: {np.round(theta*180/np.pi,1)} speed: {travel_speed} score: {np.round(benefit,2)}")
+                if i > 16:
+                    print(f"direction: {np.round(theta*180/np.pi,1)} speed: {travel_speed} score: {np.round(benefit,2)}")
 
 
         self.previous_obs = sensors
