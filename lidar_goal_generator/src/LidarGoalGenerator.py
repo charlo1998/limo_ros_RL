@@ -340,7 +340,7 @@ class LidarGoalGenerator:
             initialized=True
 
             #waiting for human input to take another step
-            #debug = input()
+            debug = input()
 
             # Check if robot has reached the goal
             if self.navigating_to_goal:
