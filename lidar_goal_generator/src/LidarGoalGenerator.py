@@ -249,9 +249,9 @@ class LidarGoalGenerator:
         if v_front < -0.1: #do not allow high backwards velocities, turn around instead
             linear = 0
             if math.sin(angle) > 0:
-                v_angular = self.angular_speed*1.5 #rotate faster
+                angular = self.angular_speed*2 #rotate faster
             else:
-                v_angular = -self.angular_speed*1.5
+                angular = -self.angular_speed*2
             print(f"rotating to go backwards")
         elif abs(angle) > 45: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
