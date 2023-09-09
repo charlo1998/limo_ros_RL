@@ -31,9 +31,9 @@ class gofai():
 
     def __init__(self):
         self.arc = 2*math.pi/settings.number_of_sensors #rad
-        self.heading_coeff = 0.5
-        self.safety_coeff = 5
-        self.safety_dist = 1
+        self.heading_coeff = 1
+        self.safety_coeff = 3
+        self.safety_dist = 1.1
         self.previous_obs = [3]*(settings.number_of_sensors+6)
         self.bug = tangent_bug()
 
@@ -150,7 +150,7 @@ class gofai():
                     minDist = dist
 
             #computing the benefit
-            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(self.safety_dist - minDist)**2
+            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(1/minDist-1/self.safety_dist)
             #print(f"heading term: {global_goal_distance-new_dist}")
             #print(f"safety term: {self.safety_dist - minDist}")
             if benefit > bestBenefit:

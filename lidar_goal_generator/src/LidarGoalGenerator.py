@@ -316,7 +316,7 @@ class LidarGoalGenerator:
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(observation)
-                print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np,round(local_goal[1],2)]}")
+                print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
                 observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
