@@ -32,8 +32,8 @@ class gofai():
     def __init__(self):
         self.arc = 2*math.pi/settings.number_of_sensors #rad
         self.heading_coeff = 1
-        self.safety_coeff = 2.5
-        self.safety_dist = 0.6
+        self.safety_coeff = 5
+        self.safety_dist = 0.75
         self.previous_obs = [3]*(settings.number_of_sensors+6)
         self.bug = tangent_bug()
 
@@ -150,7 +150,7 @@ class gofai():
                     minDist = dist
 
             #computing the benefit
-            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(self.safety_dist - minDist)
+            benefit = self.heading_coeff*(global_goal_distance-new_dist) - self.safety_coeff*(self.safety_dist - minDist)**3
             #print(f"heading term: {global_goal_distance-new_dist}")
             #print(f"safety term: {self.safety_dist - minDist}")
             if benefit > bestBenefit:
@@ -178,14 +178,13 @@ class gofai():
         #print(f"orientations: {np.round(orientations,2)}")
         #print(f"sensors: {np.round(sensors,1)}")
         #print(f"goal_distance: {global_goal_distance} angle: {goal_angle*180/math.pi}")
-        #print(f"dwa predicted destination: {[np.round(y_dest,3), np.round(x_dest,3)]}")
+        print(f"dwa received pos: {[np.round(x_pos,3), np.round(y_pos,3)]}")
+        print(f"dwa predicted destination: {[np.round(x_dest,3), np.round(y_dest,3)]}")
         #print(f"destination: {np.round(now,2)}")
         #print(f"min distance in chosen trajectory: {minDist}")
         #print(f"goal speed: {travel_speed}")
         #print(f"received speed: {np.round(np.sqrt(x_vel**2 + y_vel**2),2)}")
-        #print(f"dwa received pos: {[np.round(y_pos,3), np.round(x_pos,3)]}")
         #print(f"corrected pos: {[np.round(y_pos+y_offset,2), np.round(x_pos+x_offset,2)]}")
-        #print(f"new_dist: {new_dist}")
         #---------------------------------------------
 
         
