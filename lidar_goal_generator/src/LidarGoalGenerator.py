@@ -149,7 +149,7 @@ class LidarGoalGenerator:
             sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
-        print(f"wrote to state!")
+        #print(f"wrote to state!")
         self.state[0][0][6:18] = sensors
 
         
@@ -310,18 +310,17 @@ class LidarGoalGenerator:
                 observation = self.state.copy()
 
                 if self.RL:
-                    chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
+                    chosen_sectors = self.model(torch.from_numpy(observation).float()) #inference profiling
                 else:
-                    chosen_sectors = cost_function(self.state) #performance profiling (closer to real agent behavior)
+                    chosen_sectors = cost_function(observation) #performance profiling (closer to real agent behavior)
                 #action, _states = self.model.predict(self.state)
                 print("-----------------bug start ----------------")
-                local_goal = self.bug.predict(self.state)
+                local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
-                print(f"before mask: {self.state[0][0]}")
-                self.state = self.apply_mask(self.state, chosen_sectors)
+                observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
-                action = self.DWA.predict(self.state, local_goal)
+                action = self.DWA.predict(observation, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
                 print(f"angular vel: {angular} linear vel: {linear}")
                 mid = time.perf_counter()
