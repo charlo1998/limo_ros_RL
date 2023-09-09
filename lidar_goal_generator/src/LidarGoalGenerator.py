@@ -239,16 +239,16 @@ class LidarGoalGenerator:
         print(f"wanted angle corrected for yaw: {angle*180/np.pi}")
         v_front =  speed*math.cos(angle)
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
-        v_angular = self.angular_speed*angle
+        v_angular = self.angular_speed*math.sin(angle)
         #print(f"wanted v_front: {v_front}")
         #print(f"wanted v_side: {v_side}")
         if v_front < -0.1: #do not allow high backwards velocities, turn around instead
             linear = 0
-            angular = v_angular #rotate faster
+            angular = v_angular*1.2 #rotate faster
             print(f"rotating to go backwards")
         elif abs(angle) > 45: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
-            angular = v_angular*0.8
+            angular = v_angular
         else:
             angular = v_angular*0.8
             linear = v_front
