@@ -320,12 +320,13 @@ class LidarGoalGenerator:
                     chosen_sectors = self.model(torch.from_numpy(observation).float()) #inference profiling
                 else:
                     chosen_sectors = cost_function(observation) #performance profiling (closer to real agent behavior)
+                    
                 self.actions.append(chosen_sectors)
                 print("-----------------bug start ----------------")
                 local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
-                observation = self.apply_mask(observation, chosen_sectors)
+                #observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands

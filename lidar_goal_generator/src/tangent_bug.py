@@ -73,9 +73,9 @@ class tangent_bug():
         #print(f"sensors: {sensors}")
 
         for i, sensor in enumerate(sensors):
-            if sensor >= 10 and self.objects_last_updated[i] < 12:
-                sensors[i] = self.previous_obs[i]+0.05
+            if sensor >= 10 and self.objects_last_updated[i] < 15:
                 self.objects_last_updated[i] += 1
+                sensors[i] = self.previous_obs[i]+0.05/self.objects_last_updated[i]
             else:
                 self.objects_last_updated[i] = 0
             objects.append(min(sensors[i], self.max_dist))
@@ -201,8 +201,8 @@ class tangent_bug():
                 self.following_boundary_counter = 0
                 #if we've been following the boundary for a long time, try returning to normal state and switching tangent directions
                 self.tangent_counter +=1
-                if self.tangent_counter > 20:
-                    self.tangent_counter = -20
+                if self.tangent_counter > 40:
+                    self.tangent_counter = -40
                     self.tangent_direction = -1*self.tangent_direction
                     print("switching direction")
                     self.following_boundary = False
