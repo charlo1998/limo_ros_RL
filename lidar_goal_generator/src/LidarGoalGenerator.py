@@ -15,6 +15,7 @@ from dynamic_window_approach import RobotType
 import numpy as np
 from bisect import bisect
 import time
+from os import path
 
 #RL libraries
 #import torch
@@ -363,9 +364,10 @@ class LidarGoalGenerator:
 
                     self.goal_x = self.goals[self.current_goal_idx][0]
                     self.goal_y = self.goals[self.current_goal_idx][1]
-                    with open("~/agilex_ws/src/limo_ros_RL/lidar_goal_generator/logging/observations.npy", "wb") as f:
+                    docs_dir=path.expanduser('~/Documents')
+                    with open(path.join(docs_dir, 'logging', 'observations'), "wb") as f:
                         np.save(f,np.array(self.observations),allow_pickle=True)
-                    with open("~/agilex_ws/src/limo_ros_RL/lidar_goal_generator/logging/actions.npy", "wb") as f:
+                    with open(path.join(docs_dir, 'logging', 'actions'), "wb") as f:
                         np.save(f,np.array(self.observations),allow_pickle=True)
                 else:
                     self.bug.done=False
