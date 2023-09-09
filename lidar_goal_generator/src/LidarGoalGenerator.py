@@ -227,9 +227,6 @@ class LidarGoalGenerator:
         elif action < settings.action_discretization * 3:
             #medium long
             speed *= 9
-        elif action < settings.action_discretization * 4:
-            #long dist
-            speed *= 20
         else:
             print("Wrong action index!")
 
@@ -246,11 +243,11 @@ class LidarGoalGenerator:
         #print(f"wanted v_side: {v_side}")
         if v_front < -10.0: #do not allow high backwards velocities, turn around instead
             linear = 0
-            angular = self.angular_speed*angle #rotate faster
+            angular = angle #rotate faster
             print(f"rotating to go backwards")
         else:
-            angular = self.angular_speed*angle
-            linear = self.linear_speed*v_front
+            angular = angle
+            linear = v_front
 
         return [linear, angular]
     

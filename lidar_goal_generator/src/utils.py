@@ -65,8 +65,8 @@ class gofai():
         
         vel_angle = obs[3]
         vel_norm = obs[2]
-        x_pos = obs[5]
-        y_pos = obs[4]
+        x_pos = obs[4]
+        y_pos = obs[5]
         predicted_delay = settings.delay*5 #accouting for predicted latency, and simulation time vs real time
         x_offset = predicted_delay*vel_norm*math.cos(vel_angle)*1.25
         y_offset = predicted_delay*vel_norm*math.sin(vel_angle)*1.25
@@ -126,18 +126,18 @@ class gofai():
             if (thetas[direction]-goal_angle > goal_angle - thetas[direction-1]): #find which discretized value is closest
                 direction -= 1
             action = (16 - direction%settings.action_discretization + round(0.75*settings.action_discretization))%settings.action_discretization  #transform the airsim action space (starts at 90 deg and goes cw)
-            return action + 48
+            return action + 32
         
         #sensors = np.concatenate((sensors,sensors)) #this way we can more easily slice the angles we want
         #angles = np.concatenate((angles,angles))
         bestBenefit = -1000
         action = 0
         angle_increment = 2*math.pi/settings.action_discretization
-        for i in range(settings.action_discretization*4): #4 velocities time 16 directions
+        for i in range(settings.action_discretization*3): #3 velocities time 16 directions
             theta = math.pi/2 - angle_increment*(i%settings.action_discretization)  #in the action space, the circle starts at 90 deg and goes cw (drone body frame reference)
 
             #computing new distance to goal
-            travel_speed = min(2, settings.base_speed*3**(i//settings.action_discretization)) #travelling speed can be 0.1, 0.3, 0.9, or 2 m/s 
+            travel_speed = min(2, settings.base_speed*3**(i//settings.action_discretization)) #travelling speed can be 0.1, 0.3, 0.9 m/s
             x_dest = travel_speed*math.cos(theta)*0.4*(settings.mv_fw_dur+predicted_delay*0.25) + vel_norm*math.cos(vel_angle)*(0.75+predicted_delay*1.25) # correcting for current speed since change in speed isn't instantaneous
             y_dest = travel_speed*math.sin(theta)*0.4*(settings.mv_fw_dur+predicted_delay*0.25) + vel_norm*math.sin(vel_angle)*(0.75+predicted_delay*1.25)
 
