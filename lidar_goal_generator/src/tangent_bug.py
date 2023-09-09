@@ -26,7 +26,7 @@ class tangent_bug():
         self.normalize = True
 
         # PID Constants
-        self.setpoint = 0.3 # Setpoint distance in meters should be the same as dwa?
+        self.setpoint = 0.2 # Setpoint distance in meters should be the same as dwa?
         self.kp = 0.6  # Proportional gain
         self.ki = 0.05  # Integral gain
         self.kd = 0.0  # Derivative gain
