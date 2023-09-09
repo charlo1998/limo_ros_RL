@@ -21,7 +21,7 @@ class tangent_bug():
         self.max_dist = 10
         
         self.foundPathCounter = 0
-        self.tangent_direction = 1
+        self.tangent_direction = -1
         self.tangent_counter = 0
         self.normalize = True
 
@@ -102,7 +102,7 @@ class tangent_bug():
             self.following_boundary_counter = 0
             self.following_boundary = False
             self.foundPathCounter = 0
-            self.tangent_direction = 1
+            self.tangent_direction = -1
             self.tangent_counter = 0
             # PID Variables
             self.last_error = 0.0
