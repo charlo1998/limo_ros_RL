@@ -44,7 +44,7 @@ class LidarGoalGenerator:
         
         # Goal coordinates
         self.goals = [[2.8, 0.0], [0.0, 0.0]]
-        self.goal_x = 2.0
+        self.goal_x = 2.8
         self.goal_y = 0.0
         
         # Current robot pose
