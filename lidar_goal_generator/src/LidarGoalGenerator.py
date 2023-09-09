@@ -149,6 +149,7 @@ class LidarGoalGenerator:
             sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
+        print(f"wrote to state!")
         self.state[0][0][6:18] = sensors
 
         
@@ -305,6 +306,8 @@ class LidarGoalGenerator:
                 
                 print(f"Robot pose: [x,y] = {[self.robot_x, self.robot_y]}")
                 print(f"Goal [x,y]: {[self.goal_x, self.goal_y]}")
+                #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
+                observation = self.state.copy()
 
                 if self.RL:
                     chosen_sectors = self.model(torch.from_numpy(self.state).float()) #inference profiling
