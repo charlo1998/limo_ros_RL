@@ -145,7 +145,7 @@ class LidarGoalGenerator:
                 #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
 
             #normalizing values and bounding them to [-1,1]
-            sensors[i] = np.log(sensors[i]+0.0001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+            sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
             sensors[i] = min(1,max(-1,sensors[i]))
 
         #write processed data to state
@@ -202,7 +202,7 @@ class LidarGoalGenerator:
 
         #normalize and write robot pose to state directly
         print(f"relative goal: [theta,dist] = {[(np.pi/2-angle_to_goal-self.robot_yaw)*180/np.pi, distance_to_goal]}")
-        distance_to_goal = np.log10(distance_to_goal+0.0001)/np.log10(100) #this way gives more range to the smaller distances (large distances are less important).
+        distance_to_goal = np.log10(distance_to_goal+0.00001)/np.log10(100) #this way gives more range to the smaller distances (large distances are less important).
         distance_to_goal = min(1,max(-1,distance_to_goal))
         angle_to_goal = angle_to_goal/np.pi #since it is already between [-180,180] and we want a linear transformation.
         self.state[0][0][0:2] = [angle_to_goal, distance_to_goal]
@@ -315,6 +315,7 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(self.state)
                 print(f"bug local goal [x,y]: {[local_goal[0], local_goal[1]]}")
                 print("--------------- bug end -------------------")
+                print(f"before mask: {self.state[0][0]}")
                 self.state = self.apply_mask(self.state, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(self.state, local_goal)

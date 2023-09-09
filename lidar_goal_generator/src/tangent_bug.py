@@ -374,7 +374,7 @@ class tangent_bug():
             gap = np.sqrt(objects[left]**2 + objects[right]**2 -2*objects[left]*objects[right]*math.cos(angles[right]-angles[left]))
             #print(f"gap between {left} and {right}: {gap}")
             
-            if gap < 2.5:
+            if gap < 0.4:
                 if left < right:
                     for i in range(left, right):
                         temp_objects[i] = min(objects[left], objects[right])

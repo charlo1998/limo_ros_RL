@@ -73,7 +73,7 @@ class gofai():
 
         sensors = obs[6:settings.number_of_sensors+6] 
         angles = np.arange(-np.pi, np.pi, self.arc)
-        print(f"sensors: {np.round(sensors,1)}")
+        #print(f"sensors: {np.round(sensors,1)}")
         #print(f"angles: {angles}")
 
         # ---------------- random and greedy baselines -----------------------------
