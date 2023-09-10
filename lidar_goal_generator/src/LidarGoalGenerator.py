@@ -26,7 +26,9 @@ class LidarGoalGenerator:
         rospy.init_node('lidar_goal_generator', anonymous=True)
 
         #RL agent setup
-        self.nb_of_sensors = 60
+        self.nb_of_sensors = 12
+        self.x_objects = np.ones(self.nb_of_sensors)*10
+        self.y_objects = np.ones(self.nb_of_sensors)*10
         self.state = np.zeros((1, 1, 4 + 2 + 60)) #todo: check if it works with only a list
         #self.model = PyTorchMlp()
         #self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
@@ -48,6 +50,8 @@ class LidarGoalGenerator:
         self.goal_y = 0.0
         
         # Current robot pose
+        self.old_x = 0.0
+        self.old_y = 0.0
         self.robot_x = 0.0
         self.robot_y = 0.0
         self.robot_yaw = 0.0
@@ -82,8 +86,10 @@ class LidarGoalGenerator:
 
         
     def lidar_callback(self, scan_data):
-        # Process LiDAR data for RL agent
+        # Process LiDAR data for RL agent: update seen sensors with new values, and try to infer other sensors from odom and old values
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
+        dx = self.robot_x - self.old_x
+        dy = self.robot_y - self.old_y
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
@@ -112,7 +118,7 @@ class LidarGoalGenerator:
 
         lidar_FOV =  math.ceil(scan_data.angle_max - scan_data.angle_min)
 
-        #spliting points into ranges of angles
+        #spliting both new points and old objects into ranges of angles
         theta = 2*np.pi/self.nb_of_sensors
         for i in range(self.nb_of_sensors):
             if i == 0:
@@ -121,8 +127,7 @@ class LidarGoalGenerator:
                 thetas.append(thetas[i-1]+theta)
 
         if len(angles) == 0: #lidar not seeing anything!
-            #np.concatenate((np.zeros(nb_of_sensors), np.array(thetas)/180.0))
-            return np.zeros(self.nb_of_sensors)
+            return np.ones(self.nb_of_sensors)
 
         #print(f"angle ranges: {thetas}")
         #print(f"angle left: {angle_left}")
@@ -139,21 +144,41 @@ class LidarGoalGenerator:
 
         sensors = [0 for x in range(self.nb_of_sensors)]
 
+        #update measured sensors and obstacles positions
         for i in range(self.nb_of_sensors):
             if len(distances_by_sensor[i]) == 0: #missing lidar values!
                 sensors[i] = 66 #with no information, set to 66, which will be ignored
-                #print(f"missing lidar values in bucket {i}!")
+                self.x_objects[i] -= dx
+                self.y_objects[i] -= dy
             else:
                 sensors[i] = min(distances_by_sensor[i])
-                #sensors[i] = 10 #to remove for obstacle avoidance (to use lidar)
+                self.x_objects[i] = math.cos(thetas[i])*sensors[i]
+                self.y_objects[i] = math.sin(thetas[i])*sensors[i]
+        print(f"measured sensors: {sensors}")
+
+        #use obstacles positions to update old sensors, and normalize all sensors
+        object_angles = np.arctan2(self.y_objects, self.x_objects)
+        for i, object_angles in enumerate(object_angles):
+            ith_sensor = bisect(thetas,angle)
+            if sensors[ith_sensor] == 66:
+                distances_by_sensor[ith_sensor-1].append(distances[i])
+
+        normalized_sensors = [0 for x in range(self.nb_of_sensors)]
+        for i in range(self.nb_of_sensors):
+            if sensors[i] == 66:
+                sensors[i] = min(distances_by_sensor[i])
+                #print(f"updated unseen sensor! angle: {thetas[i]} new dist: {sensors[i]}")
 
             #normalizing values and bounding them to [-1,1]
-            sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
-            sensors[i] = min(1,max(-1,sensors[i]))
+            normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+            normalized_sensors[i] = min(1,max(-1,sensors[i]))
+        print(f"final sensors: {sensors}")
+
+
 
         #write processed data to state
         #print(f"wrote to state!")
-        self.state[0][0][6:66] = sensors
+        self.state[0][0][6:66] = normalized_sensors
 
         
     def pose_callback(self, odom_data):
@@ -240,7 +265,7 @@ class LidarGoalGenerator:
         #correcting for current yaw
         angle = angle - self.robot_yaw
         print(f"estimated yaw: {np.round(self.robot_yaw*180/np.pi,1)}")
-        print(f"wanted angle corrected for yaw: {np.round(angle*180/np.pi,1)}")
+        #print(f"wanted angle corrected for yaw: {np.round(angle*180/np.pi,1)}")
         v_front =  speed*math.cos(angle)
         v_side = speed*math.sin(angle) #vy should be close to 0, if not, rotate:
         v_angular = self.angular_speed*math.sin(angle)
@@ -335,7 +360,7 @@ class LidarGoalGenerator:
                 #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 end = time.perf_counter()
-                print(f"dwa process time: {np.round(mid-start,3)}")
+                #print(f"dwa process time: {np.round(mid-start,3)}")
                 
                 print("-------------------------------------------------")
                 

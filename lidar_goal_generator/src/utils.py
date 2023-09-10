@@ -165,7 +165,7 @@ class gofai():
 
 
         self.previous_obs = sensors
-        print(f"min predicted distance in chosen dwa action: {np.round(mindistAction,2)}")
+        #print(f"min predicted distance in chosen dwa action: {np.round(mindistAction,2)}")
         print(f"heading term: {np.round(headingTerm,2)} safety term: {np.round(safetyTerm,2)}")
         #print(f"full loop action: {action}")
 
