@@ -372,7 +372,7 @@ class LidarGoalGenerator:
                     with open(path.join(docs_dir, 'logging', 'observations'), "wb") as f:
                         np.save(f,np.array(self.observations),allow_pickle=True)
                     with open(path.join(docs_dir, 'logging', 'actions'), "wb") as f:
-                        np.save(f,np.array(self.observations),allow_pickle=True)
+                        np.save(f,np.array(self.actions),allow_pickle=True)
                 else:
                     self.bug.done=False
             
