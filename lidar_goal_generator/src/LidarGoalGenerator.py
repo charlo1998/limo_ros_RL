@@ -420,8 +420,9 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
-                print(observation[0][0][self.unseen_idx==1])
-                observation[0][0][self.unseen_idx==1] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
+                print(self.unseen_idx==1)
+                virtual_idx = self.unseen_idx==1
+                observation[0][0][6:virtual_idx+6] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
                 #observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
