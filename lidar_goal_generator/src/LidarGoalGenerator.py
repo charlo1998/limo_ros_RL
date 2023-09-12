@@ -331,7 +331,7 @@ class LidarGoalGenerator:
 
         theta = 2*np.pi/self.nb_of_sensors
         for i in range(self.nb_of_sensors):
-            if measured_sensors >= 66:
+            if measured_sensors[i] >= 66:
                 self.unseen_idx[i] == 1
             else:
                 self.unseen_idx[i] == 0
