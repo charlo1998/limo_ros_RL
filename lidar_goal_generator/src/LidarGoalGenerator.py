@@ -72,7 +72,7 @@ class LidarGoalGenerator:
         #LiDAR objects
         self.x_objects = np.ones(self.nb_of_sensors)*10
         self.y_objects = np.ones(self.nb_of_sensors)*10
-        self.unseen_idx = []
+        self.unseen_idx = np.zeros(self.nb_of_sensors)
         
         # Robot pose subscriber
         self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
@@ -321,8 +321,7 @@ class LidarGoalGenerator:
 
         state = observation.copy()
         measured_sensors = 100**state[0][0][6:self.nb_of_sensors+6]
-        self.unseen_idx = [1 if sensor >= 66 else 0 for sensor in measured_sensors]
-        print(f"unseen_idx: {self.unseen_idx}")
+        
         dx = self.robot_x - self.old_x
         dy = self.robot_y - self.old_y
 
@@ -332,10 +331,15 @@ class LidarGoalGenerator:
 
         theta = 2*np.pi/self.nb_of_sensors
         for i in range(self.nb_of_sensors):
+            if measured_sensors == 66:
+                self.unseen_idx[i] == 1
+            else:
+                self.unseen_idx[i] == 0
             if i == 0:
                 thetas = [-np.pi]
             else:
                 thetas.append(thetas[i-1]+theta)
+        print(f"unseen_idx: {self.unseen_idx}")
 
         #1) update obstacles positions
         for i in range(self.nb_of_sensors):
