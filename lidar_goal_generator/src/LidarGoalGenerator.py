@@ -149,8 +149,8 @@ class LidarGoalGenerator:
         for i in range(self.nb_of_sensors):
             if len(distances_by_sensor[i]) == 0: #missing lidar values!
                 sensors[i] = 66 #with no information, set to 66, which will be ignored
-                self.x_objects[i] -= dx
-                self.y_objects[i] -= dy
+                self.x_objects[i] += dx
+                self.y_objects[i] += dy
             else:
                 sensors[i] = min(distances_by_sensor[i])
                 self.x_objects[i] = math.cos(thetas[i])*sensors[i]
