@@ -176,14 +176,14 @@ class LidarGoalGenerator:
             #normalizing values and bounding them to [-1,1]
             normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
             normalized_sensors[i] = min(1,max(-1,sensors[i]))
-        #print(f"final sensors: {np.round(sensors,2)}")
+        print(f"final sensors: {np.round(sensors,2)}")
 
         #wait = input()
 
         #write processed data to state
         #print(f"wrote to state!")
         self.state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
-        #print(f"state: {np.round(self.state,2)}")
+        print(f"state: {np.round(self.state,2)}")
 
         
     def pose_callback(self, odom_data):
