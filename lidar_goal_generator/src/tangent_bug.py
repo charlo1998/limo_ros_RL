@@ -27,8 +27,8 @@ class tangent_bug():
 
         # PID Constants
         self.setpoint = 0.2 # Setpoint distance in meters should be the same as dwa?
-        self.kp = 0.7  # Proportional gain
-        self.ki = 0.05  # Integral gain
+        self.kp = 1  # Proportional gain
+        self.ki = 0.1  # Integral gain
         self.kd = 0.0  # Derivative gain
 
         # PID Variables
@@ -417,10 +417,12 @@ class tangent_bug():
         #print(f"unbounded pid: {pid_output}")
     
         # Bound PID output
-        if pid_output < -1.2:
-            pid_output = -1.2
-        elif pid_output > 1.2:
-            pid_output = 1.2
+        if pid_output < -1.5: #don't go over pi/2 correction
+            pid_output = -1.5
+            print("PID saturated")
+        elif pid_output > 1.5:
+            pid_output = 1.5
+            print("PID saturated")
 
         # Store last error and elapsed time
         self.last_error = error
