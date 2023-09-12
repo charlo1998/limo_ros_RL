@@ -417,10 +417,10 @@ class tangent_bug():
         #print(f"unbounded pid: {pid_output}")
     
         # Bound PID output
-        if pid_output < -0.5:
-            pid_output = -0.5
-        elif pid_output > 0.5:
-            pid_output = 0.5
+        if pid_output < -1:
+            pid_output = -1
+        elif pid_output > 1:
+            pid_output = 1
 
         # Store last error and elapsed time
         self.last_error = error
