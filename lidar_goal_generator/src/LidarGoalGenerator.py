@@ -72,7 +72,7 @@ class LidarGoalGenerator:
         #LiDAR objects
         self.x_objects = np.ones(self.nb_of_sensors)*10
         self.y_objects = np.ones(self.nb_of_sensors)*10
-        self.unseen_idx = np.zeros(self.nb_of_sensors)
+        self.unseen_idx = np.zeros(self.nb_of_sensors+6)
         
         # Robot pose subscriber
         self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
@@ -332,9 +332,9 @@ class LidarGoalGenerator:
         theta = 2*np.pi/self.nb_of_sensors
         for i in range(self.nb_of_sensors):
             if measured_sensors[i] >= 66:
-                self.unseen_idx[i] == 1
+                self.unseen_idx[i+6] == 1
             else:
-                self.unseen_idx[i] == 0
+                self.unseen_idx[i+6] == 0
             if i == 0:
                 thetas = [-np.pi]
             else:
@@ -421,8 +421,7 @@ class LidarGoalGenerator:
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
                 print(self.unseen_idx==1)
-                virtual_idx = self.unseen_idx==1
-                observation[0][0][6:virtual_idx+6] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
+                observation[0][0][self.unseen_idx==1] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
                 #observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
