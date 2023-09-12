@@ -27,8 +27,6 @@ class LidarGoalGenerator:
 
         #RL agent setup
         self.nb_of_sensors = settings.number_of_sensors
-        self.x_objects = np.ones(self.nb_of_sensors)*10
-        self.y_objects = np.ones(self.nb_of_sensors)*10
         self.state = np.zeros((1, 1, 4 + 2 + settings.number_of_sensors)) #todo: check if it works with only a list
         #self.model = PyTorchMlp()
         #self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
@@ -71,6 +69,10 @@ class LidarGoalGenerator:
 
         # LiDAR subscriber
         self.lidar_sub = rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
+        #LiDAR objects
+        self.x_objects = np.ones(self.nb_of_sensors)*10
+        self.y_objects = np.ones(self.nb_of_sensors)*10
+        self.unseen_idx = []
         
         # Robot pose subscriber
         self.pose_sub = rospy.Subscriber('/odom', Odometry, self.pose_callback)
@@ -317,6 +319,8 @@ class LidarGoalGenerator:
 
         state = observation.copy()
         measured_sensors = 100**state[0][0][6:self.nb_of_sensors+6]
+        self.unseen_idx = [1 if sensor >= 66 else 0 for sensor in measured_sensors]
+        print(f"unseen_idx: {self.unseen_idx}")
         dx = self.robot_x - self.old_x
         dy = self.robot_y - self.old_y
 
@@ -410,6 +414,7 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
+                observation[self.unseen_idx==1] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
                 #observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
