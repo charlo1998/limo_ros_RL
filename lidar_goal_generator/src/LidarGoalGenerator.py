@@ -241,7 +241,7 @@ class LidarGoalGenerator:
 
         action = action % settings.action_discretization
         angle = np.pi/2-2*np.pi/settings.action_discretization*action #the negative sign is to go clockwise
-        #print(f"pure reconverted angle: {angle*180/np.pi}")
+        print(f"dwa heading: {angle*180/np.pi}")
         #correcting for current yaw
         angle = angle - self.robot_yaw
         print(f"estimated yaw: {np.round(self.robot_yaw*180/np.pi,1)}")
