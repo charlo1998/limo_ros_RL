@@ -167,7 +167,7 @@ class LidarGoalGenerator:
             if sensors[ith_sensor-1] == 66:
                 distances_by_sensor[ith_sensor-1].append(object_distances[i])
 
-        normalized_sensors = [0 for x in range(self.nb_of_sensors)]
+        
         for i in range(self.nb_of_sensors):
             if sensors[i] == 66 and len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
@@ -177,9 +177,13 @@ class LidarGoalGenerator:
         #wait = input()
 
         #normalize and write processed data to state
+        normalized_sensors = [0 for x in range(self.nb_of_sensors)]
         for i in range(self.nb_of_sensors):
+            print(sensors[i])
             normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
+            print(normalized_sensors[i])
             normalized_sensors[i] = min(1,max(-1,sensors[i]))
+            
         self.state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
         print(f"state: {np.round(self.state,2)}")
 
