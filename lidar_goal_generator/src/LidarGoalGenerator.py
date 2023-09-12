@@ -154,12 +154,12 @@ class LidarGoalGenerator:
                 sensors[i] = min(distances_by_sensor[i])
                 self.x_objects[i] = math.cos(thetas[i])*sensors[i]
                 self.y_objects[i] = math.sin(thetas[i])*sensors[i]
-        print(f"measured sensors: {sensors}")
+        print(f"measured sensors: {np.round(sensors,2)}")
 
         #use obstacles positions to update old sensors, and normalize all sensors
         object_angles = np.arctan2(self.y_objects, self.x_objects)
         object_distances = np.ones(self.nb_of_sensors)
-        print(f"object angles: {object_angles*180/np.pi}")
+        print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
         for i, object_angle in enumerate(object_angles):
             ith_sensor = bisect(thetas,object_angle)
             object_distances[i] = np.sqrt(self.x_objects[i]**2+self.y_objects[i]**2)
@@ -170,14 +170,14 @@ class LidarGoalGenerator:
         for i in range(self.nb_of_sensors):
             if sensors[i] == 66 and len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
-                print(f"updated unseen sensor! angle: {thetas[i]} new dist: {sensors[i]}")
+                print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
 
             #normalizing values and bounding them to [-1,1]
             normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
             normalized_sensors[i] = min(1,max(-1,sensors[i]))
-        print(f"final sensors: {sensors}")
+        print(f"final sensors: {np.round(sensors,2)}")
 
-        wait = input()
+        #wait = input()
 
         #write processed data to state
         #print(f"wrote to state!")
