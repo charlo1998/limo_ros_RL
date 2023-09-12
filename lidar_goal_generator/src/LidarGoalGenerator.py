@@ -369,7 +369,7 @@ class LidarGoalGenerator:
 
         state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
 
-        return state[0][0][6:self.nb_of_sensors+6]
+        return state
 
 
         
