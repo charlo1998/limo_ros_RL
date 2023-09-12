@@ -72,9 +72,9 @@ class tangent_bug():
         #print(f"previous obs: {np.round(self.previous_obs,2)}")
         print(f"received sensors: {np.round(sensors,2)}")
         for i, sensor in enumerate(sensors):
-            if sensor >= 10 and self.objects_last_updated[i] < 6:
+            if sensor > 10 and self.objects_last_updated[i] < 6:
                 self.objects_last_updated[i] += 1
-                sensors[i] = self.previous_obs[i]+0.05/self.objects_last_updated[i]
+                sensors[i] = self.previous_obs[i]+0.1/self.objects_last_updated[i]
             else:
                 self.objects_last_updated[i] = 0
             objects.append(min(sensors[i], self.max_dist))
