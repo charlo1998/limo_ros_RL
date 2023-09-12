@@ -93,6 +93,8 @@ class LidarGoalGenerator:
 
         self.old_x = self.robot_x
         self.old_y = self.robot_y 
+        print("                                            ")
+        print("--------------------------------------------")
         print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
@@ -165,6 +167,7 @@ class LidarGoalGenerator:
         object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
         print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
         print(f"object_distances: {np.round(object_distances,2)}")
+        print("                                     ")
 
         for i, object_angle in enumerate(object_angles):
             ith_sensor = bisect(thetas,object_angle)
@@ -184,7 +187,7 @@ class LidarGoalGenerator:
                 sensors[i] = min(distances_by_sensor[i])
                 self.x_objects[i] = math.cos(thetas[i])*sensors[i]
                 self.y_objects[i] = math.sin(thetas[i])*sensors[i]
-        print(f"measured sensors: {np.round(sensors,2)}")
+        print(f"final sensors: {np.round(sensors,2)}")
         #wait = input()
 
         #normalize and write processed data to state
