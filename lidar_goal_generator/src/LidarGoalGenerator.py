@@ -258,7 +258,7 @@ class LidarGoalGenerator:
             else:
                 angular = -self.angular_speed*2
             print(f"rotating to go backwards")
-        elif abs(angle) > 30: #if we are badly aligned with the goal, rotate and go slower
+        elif abs(angle) > np.pi/6: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
             angular = v_angular*1.3
             print(f"aligning with the goal! angle is {angle}")
