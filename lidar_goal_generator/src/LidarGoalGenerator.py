@@ -359,7 +359,7 @@ class LidarGoalGenerator:
                 measured_sensors[i] = object_sensors[i]
             else:
                 self.x_objects[i] = measured_sensors[i]*math.cos(thetas[i])
-                self.x_objects[i] = measured_sensors[i]*math.sin(thetas[i])
+                self.y_objects[i] = measured_sensors[i]*math.sin(thetas[i])
         print(f"final sensors: {np.round(measured_sensors,2)}")
         #normalize back
         normalized_sensors = [0 for x in range(self.nb_of_sensors)]
@@ -367,7 +367,7 @@ class LidarGoalGenerator:
             normalized_sensors[i] = np.log(measured_sensors[i]+0.00001)/np.log(100)
             normalized_sensors[i] = min(1.0,max(-1.0,normalized_sensors[i]))
 
-        state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
+        state[0][0][6:self.nb_of_sensors+6] = normalized_sensors.copy()
 
         return state
 
