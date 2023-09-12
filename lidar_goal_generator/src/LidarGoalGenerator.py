@@ -88,14 +88,6 @@ class LidarGoalGenerator:
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent: update seen sensors with new values, and try to infer other sensors from odom and old values
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
-        dx = self.robot_x - self.old_x
-        dy = self.robot_y - self.old_y
-
-        self.old_x = self.robot_x
-        self.old_y = self.robot_y 
-        print("                                            ")
-        print("--------------------------------------------")
-        print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
@@ -148,47 +140,14 @@ class LidarGoalGenerator:
                 ith_sensor = bisect(thetas,angle) #the bisect fnc finds where the angle would fit in the ranges we created (thetas)
                 distances_by_sensor[ith_sensor-1].append(distances[i])
 
-        sensors = [0 for x in range(self.nb_of_sensors)]
+        sensors = [0 for x in range(self.nb_of_sensors)]               
 
-        #First update obstacles positions
-        for i in range(self.nb_of_sensors):
-            self.x_objects[i] -= dx
-            self.y_objects[i] -= dy
-            
-            if len(distances_by_sensor[i]) == 0: #missing lidar values!
-                sensors[i] = 66 #with no information, set to 66, which will be ignored
-                
-        
-
-        #use obstacles positions to update sensors
-        obstacles_by_sensor = [[] for i in range(self.nb_of_sensors)]
-
-        object_angles = np.arctan2(self.y_objects, self.x_objects)
-
-        object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
-        print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
-        print(f"object_distances: {np.round(object_distances,2)}")
-        print("                                     ")
-
-        for i, object_angle in enumerate(object_angles):
-            ith_sensor = bisect(thetas,object_angle)
-            obstacles_by_sensor[ith_sensor-1].append(object_distances[i])
-
-        for i in range(self.nb_of_sensors):
-            if len(obstacles_by_sensor[i]) != 0:
-                sensors[i] = min(obstacles_by_sensor[i])
-                #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
-            else:
-                sensors[i] = 66
-        print(f"obstacle sensors: {np.round(sensors,2)}")
-
-        #then replace measured sensors with ground truth
         for i in range(self.nb_of_sensors):
             if len(distances_by_sensor[i]) != 0: #missing lidar values!
                 sensors[i] = min(distances_by_sensor[i])
-                self.x_objects[i] = math.cos(thetas[i])*sensors[i]
-                self.y_objects[i] = math.sin(thetas[i])*sensors[i]
-        print(f"final sensors: {np.round(sensors,2)}")
+            else:
+                sensors[i] = 66 #with no information, set to 66, which will be ignored
+        #print(f"final sensors: {np.round(sensors,2)}")
         #wait = input()
 
         #normalize and write processed data to state
@@ -343,6 +302,73 @@ class LidarGoalGenerator:
         #print(f"outputed obs: {obs}")
 
         return obs
+    
+    def update_obstacles(self, observation):
+        #takes in the measured lidar values and updates unseen sector with the previous positions of obstacles
+
+        state = observation.copy()
+        measured_sensors = 100**state[0][0][6:self.nb_of_sensors+6]
+        print(f"measured sensors: {np.round(measured_sensors,2)}")
+        dx = self.robot_x - self.old_x
+        dy = self.robot_y - self.old_y
+
+        self.old_x = self.robot_x
+        self.old_y = self.robot_y 
+        print("                                            ")
+        print("--------------------------------------------")
+        print(f"dx: {np.round(dx,2)} dy: {np.round(dy,2)}")
+
+        theta = 2*np.pi/self.nb_of_sensors
+        for i in range(self.nb_of_sensors):
+            if i == 0:
+                thetas = [-np.pi]
+            else:
+                thetas.append(thetas[i-1]+theta)
+
+        #1) update obstacles positions
+        for i in range(self.nb_of_sensors):
+            self.x_objects[i] -= dx
+            self.y_objects[i] -= dy
+
+        #2) use obstacles positions to update sensors
+        obstacles_by_sensor = [[] for i in range(self.nb_of_sensors)]
+
+        object_angles = np.arctan2(self.y_objects, self.x_objects)
+
+        object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
+        print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
+        print(f"object_distances: {np.round(object_distances,2)}")
+        print("                                     ")
+
+        for i, object_angle in enumerate(object_angles):
+            ith_sensor = bisect(thetas,object_angle)
+            obstacles_by_sensor[ith_sensor-1].append(object_distances[i])
+
+        object_sensors = [0 for x in range(self.nb_of_sensors)]   
+        for i in range(self.nb_of_sensors):
+            if len(obstacles_by_sensor[i]) != 0:
+                object_sensors[i] = min(obstacles_by_sensor[i])
+                #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
+            else:
+                object_sensors[i] = 66
+        print(f"obstacle sensors: {np.round(object_sensors,2)}")
+
+        #3) update sensors and seen objects with ground truth
+        for i in range(self.nb_of_sensors):
+            if measured_sensors[i] >= 66:
+                measured_sensors[i] = object_sensors[i]
+            else:
+                self.x_objects[i] = measured_sensors[i]*math.cos(thetas[i])
+                self.x_objects[i] = measured_sensors[i]*math.sin(thetas[i])
+        print(f"final sensors: {np.round(measured_sensors,2)}")
+        #normalize back
+        normalized_sensors = [0 for x in range(self.nb_of_sensors)]
+        for i in range(self.nb_of_sensors):
+            normalized_sensors[i] = np.log(measured_sensors[i]+0.00001)/np.log(100)
+            normalized_sensors[i] = min(1.0,max(-1.0,normalized_sensors[i]))
+
+        return normalized_sensors
+
 
         
     def run(self):
@@ -360,6 +386,7 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
+                observation = self.update_obstacles(observation)
                 #print(f"copied observation: {np.round(observation,2)}")
                 self.observations.append(observation)
 
