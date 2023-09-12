@@ -374,7 +374,7 @@ class LidarGoalGenerator:
 
         
     def run(self):
-        rate = rospy.Rate(1)  # 8 Hz
+        rate = rospy.Rate(8)  # 8 Hz
         initialized = False
         
         while not rospy.is_shutdown():
