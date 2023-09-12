@@ -367,7 +367,9 @@ class LidarGoalGenerator:
             normalized_sensors[i] = np.log(measured_sensors[i]+0.00001)/np.log(100)
             normalized_sensors[i] = min(1.0,max(-1.0,normalized_sensors[i]))
 
-        return normalized_sensors
+        state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
+
+        return state[0][0][6:self.nb_of_sensors+6]
 
 
         
