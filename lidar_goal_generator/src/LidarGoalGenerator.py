@@ -26,7 +26,7 @@ class LidarGoalGenerator:
         rospy.init_node('lidar_goal_generator', anonymous=True)
 
         #RL agent setup
-        self.nb_of_sensors = 12
+        self.nb_of_sensors = settings.number_of_sensors
         self.x_objects = np.ones(self.nb_of_sensors)*10
         self.y_objects = np.ones(self.nb_of_sensors)*10
         self.state = np.zeros((1, 1, 4 + 2 + 60)) #todo: check if it works with only a list
@@ -90,6 +90,7 @@ class LidarGoalGenerator:
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
         dx = self.robot_x - self.old_x
         dy = self.robot_y - self.old_y
+        print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
@@ -182,6 +183,7 @@ class LidarGoalGenerator:
         #write processed data to state
         #print(f"wrote to state!")
         self.state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
+        print(f"state: {np.round(self.state,2)}")
 
         
     def pose_callback(self, odom_data):

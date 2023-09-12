@@ -159,7 +159,7 @@ this means the "percieved" latency doesn't increase linearly with the clockspeed
 timedActions = False
 positionActions = True
 action_discretization = 16 #this needs to be a square number and greater than one if timedActions is set to true! 
-number_of_sensors = 60
+number_of_sensors = 12
 number_of_points = 12
 k_sensors = number_of_sensors  #the maximum amount of sensors the agent can choose at any time
 assert(action_discretization > 1)
