@@ -261,15 +261,15 @@ class LidarGoalGenerator:
         elif abs(angle) > np.pi/4: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.3
             angular = v_angular*1.5
-            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
+            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         elif abs(angle) > np.pi/6: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
             angular = v_angular*1.3
-            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
+            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         elif abs(angle) > np.pi/8: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.75
             angular = v_angular*1.2
-            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
+            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         else:
             angular = v_angular
             linear = v_front
