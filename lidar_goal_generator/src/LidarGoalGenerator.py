@@ -178,7 +178,7 @@ class LidarGoalGenerator:
 
         #write processed data to state
         #print(f"wrote to state!")
-        self.state[0][0][6:66] = normalized_sensors
+        self.state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
 
         
     def pose_callback(self, odom_data):
