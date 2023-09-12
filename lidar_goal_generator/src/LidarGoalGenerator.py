@@ -107,13 +107,13 @@ class LidarGoalGenerator:
         angles = angles[distances != 0.0]
         distances = distances[distances != 0.0]
 
-        docs_dir=path.expanduser('~/Documents')
-        with open(path.join(docs_dir, 'logging', 'lidar_angles'), "wb") as f:
-            np.save(f,angles,allow_pickle=True)
-        with open(path.join(docs_dir, 'logging', 'lidar_distances'), "wb") as f:
-            np.save(f,distances,allow_pickle=True)
+        # docs_dir=path.expanduser('~/Documents')
+        # with open(path.join(docs_dir, 'logging', 'lidar_angles'), "wb") as f:
+        #     np.save(f,angles,allow_pickle=True)
+        # with open(path.join(docs_dir, 'logging', 'lidar_distances'), "wb") as f:
+        #     np.save(f,distances,allow_pickle=True)
 
-        print("saved pc")
+        # print("saved pc")
         
         #print(f"lidar ratio of good/bad samples: {initial_size/distances.size}")
         # print(f"LiDAR distances: {distances[0:5]}")
