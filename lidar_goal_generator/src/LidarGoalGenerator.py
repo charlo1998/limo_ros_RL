@@ -334,8 +334,10 @@ class LidarGoalGenerator:
             print(f"measured sensor: {measured_sensors[i]}")
             if measured_sensors[i] >= 66.0:
                 self.unseen_idx[i+6] == 1
+                print("setting unseen sensors to 1")
             else:
                 self.unseen_idx[i+6] == 0
+
             if i == 0:
                 thetas = [-np.pi]
             else:
