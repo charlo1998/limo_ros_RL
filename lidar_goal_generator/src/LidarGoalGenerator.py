@@ -42,7 +42,7 @@ class LidarGoalGenerator:
         # Parameters
         self.goal_reached_distance = 0.18  # Distance threshold to consider the goal reached
         self.linear_speed = 0.05  # Linear speed for moving towards the goal
-        self.angular_speed = 0.9
+        self.angular_speed = 1.0
         
         # Goal coordinates
         self.goals = [[2.0, 0.0], [0.0, 0.0]]
@@ -258,10 +258,18 @@ class LidarGoalGenerator:
             else:
                 angular = -self.angular_speed*2
             print(f"rotating to go backwards")
+        elif abs(angle) > np.pi/4: #if we are badly aligned with the goal, rotate and go slower
+            linear = v_front*0.3
+            angular = v_angular*1.5
+            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
         elif abs(angle) > np.pi/6: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.5
             angular = v_angular*1.3
-            print(f"aligning with the goal! angle is {angle}")
+            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
+        elif abs(angle) > np.pi/8: #if we are badly aligned with the goal, rotate and go slower
+            linear = v_front*0.75
+            angular = v_angular*1.2
+            print(f"aligning with the goal! need to rotate {np.round(angle,1)} deg")
         else:
             angular = v_angular
             linear = v_front
