@@ -158,10 +158,12 @@ class LidarGoalGenerator:
 
         #use obstacles positions to update old sensors, and normalize all sensors
         object_angles = np.arctan2(self.y_objects, self.x_objects)
-        for i, object_angles in enumerate(object_angles):
-            ith_sensor = bisect(thetas,angle)
-            if sensors[ith_sensor] == 66:
-                distances_by_sensor[ith_sensor-1].append(distances[i])
+        print(f"object angles: {object_angles*180/np.pi}")
+        for i, object_angle in enumerate(object_angles):
+            ith_sensor = bisect(thetas,object_angle)
+            if sensors[ith_sensor-1] == 66:
+                dist_to_obj = np.sqrt(self.x_objects[i]**2+self.y_objects**2)
+                distances_by_sensor[ith_sensor-1].append(dist_to_obj)
 
         normalized_sensors = [0 for x in range(self.nb_of_sensors)]
         for i in range(self.nb_of_sensors):
