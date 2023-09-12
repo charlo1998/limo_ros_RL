@@ -157,19 +157,18 @@ class LidarGoalGenerator:
                 self.y_objects[i] = math.sin(thetas[i])*sensors[i]
         #print(f"measured sensors: {np.round(sensors,2)}")
 
-        #use obstacles positions to update old sensors, and normalize all sensors
+        #use obstacles positions to update old sensors
         object_angles = np.arctan2(self.y_objects, self.x_objects)
-        object_distances = np.ones(self.nb_of_sensors)
-        #print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
+        object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
+        print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
+        print(f"object_distances: {object_distances}")
         for i, object_angle in enumerate(object_angles):
             ith_sensor = bisect(thetas,object_angle)
-            object_distances[i] = np.sqrt(self.x_objects[i]**2+self.y_objects[i]**2)
-            if sensors[ith_sensor-1] == 66:
-                distances_by_sensor[ith_sensor-1].append(object_distances[i])
+            distances_by_sensor[ith_sensor-1].append(object_distances[i])
 
         
         for i in range(self.nb_of_sensors):
-            if sensors[i] == 66 and len(distances_by_sensor[i]) != 0:
+            if len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
                 #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
         #print(f"final sensors: {np.round(sensors,2)}")
