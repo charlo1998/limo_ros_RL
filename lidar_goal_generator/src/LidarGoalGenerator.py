@@ -163,7 +163,10 @@ class LidarGoalGenerator:
         #use obstacles positions to update sensors
         obstacles_by_sensor = [[] for i in range(self.nb_of_sensors)]
 
-        object_angles = np.arctan2(self.y_objects, self.x_objects) - self.robot_yaw
+        object_angles = np.arctan2(self.y_objects, self.x_objects)
+        object_angles = (object_angles*180/np.pi) % 360
+        object_angles = object_angles*np.pi/180 - np.pi
+
         object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
         print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
         print(f"object_distances: {np.round(object_distances,2)}")
