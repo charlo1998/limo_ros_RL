@@ -162,7 +162,7 @@ class LidarGoalGenerator:
         print(f"object angles: {object_angles*180/np.pi}")
         for i, object_angle in enumerate(object_angles):
             ith_sensor = bisect(thetas,object_angle)
-            object_distances[i] = np.sqrt(self.x_objects[i]**2+self.y_objects**2)
+            object_distances[i] = np.sqrt(self.x_objects[i]**2+self.y_objects[i]**2)
             if sensors[ith_sensor-1] == 66:
                 distances_by_sensor[ith_sensor-1].append(object_distances[i])
 
