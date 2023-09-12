@@ -172,22 +172,18 @@ class LidarGoalGenerator:
             if sensors[i] == 66 and len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
                 #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
-        print(f"final sensors: {np.round(sensors,2)}")
+        #print(f"final sensors: {np.round(sensors,2)}")
 
         #wait = input()
 
         #normalize and write processed data to state
         normalized_sensors = [0 for x in range(self.nb_of_sensors)]
         for i in range(self.nb_of_sensors):
-            print(sensors[i])
             normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
-            print(normalized_sensors[i])
             normalized_sensors[i] = min(1.0,max(-1.0,normalized_sensors[i]))
-            print(normalized_sensors[i])
         
-        print(f"normalized sensors: {normalized_sensors}")
         self.state[0][0][6:self.nb_of_sensors+6] = normalized_sensors
-        print(f"state: {np.round(self.state,2)}")
+        #print(f"state: {np.round(self.state,2)}")
 
         
     def pose_callback(self, odom_data):
@@ -351,7 +347,7 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
-                print(f"copied observation: {np.round(observation,2)}")
+                #print(f"copied observation: {np.round(observation,2)}")
                 self.observations.append(observation)
 
                 if self.RL:
