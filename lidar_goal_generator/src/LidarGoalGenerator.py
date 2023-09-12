@@ -50,8 +50,8 @@ class LidarGoalGenerator:
         self.goal_y = 0.0
         
         # Current robot pose
-        self.robot_dx = 0.0
-        self.robot_dy = 0.0
+        self.old_x = 0.0
+        self.old_y = 0.0
         self.robot_x = 0.0
         self.robot_y = 0.0
         self.robot_yaw = 0.0
@@ -88,8 +88,11 @@ class LidarGoalGenerator:
     def lidar_callback(self, scan_data):
         # Process LiDAR data for RL agent: update seen sensors with new values, and try to infer other sensors from odom and old values
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
-        dx = self.robot_dx
-        dy = self.robot_dy
+        dx = self.robot_x - self.old_x
+        dy = self.robot_y - self.old_y
+
+        self.old_x = self.robot_x
+        self.old_y = self.robot_y 
         print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
@@ -196,8 +199,6 @@ class LidarGoalGenerator:
         delta_y = odom_data.pose.pose.position.y - self.robot_y
         self.distance_traveled += np.linalg.norm([delta_x, delta_y])
         # Get current robot pose
-        self.robot_dx = odom_data.pose.pose.position.x - self.robot_x
-        self.robot_dy = odom_data.pose.pose.position.y - self.robot_y
         self.robot_x = odom_data.pose.pose.position.x
         self.robot_y = odom_data.pose.pose.position.y
         
