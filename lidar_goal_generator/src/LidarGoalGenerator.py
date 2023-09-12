@@ -347,6 +347,7 @@ class LidarGoalGenerator:
                 print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
+                print(f"copied observation: {np.round(observation,2)}")
                 self.observations.append(observation)
 
                 if self.RL:
