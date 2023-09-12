@@ -417,11 +417,11 @@ class tangent_bug():
         #print(f"unbounded pid: {pid_output}")
     
         # Bound PID output
-        if pid_output < -1.5: #don't go over pi/2 correction
-            pid_output = -1.5
+        if pid_output < -1: #don't go over pi/2 correction -> asin(1 or -1)
+            pid_output = -1
             print("PID saturated")
-        elif pid_output > 1.5:
-            pid_output = 1.5
+        elif pid_output > 1:
+            pid_output = 1
             print("PID saturated")
 
         # Store last error and elapsed time
