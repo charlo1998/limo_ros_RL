@@ -90,7 +90,7 @@ class LidarGoalGenerator:
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
         dx = self.robot_dx
         dy = self.robot_dy
-        print(f"dx: {dx} dy: {dy}")
+        #print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
