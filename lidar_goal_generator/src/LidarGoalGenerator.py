@@ -165,7 +165,7 @@ class LidarGoalGenerator:
 
         normalized_sensors = [0 for x in range(self.nb_of_sensors)]
         for i in range(self.nb_of_sensors):
-            if sensors[i] == 66 and distances_by_sensor[i] != 0:
+            if sensors[i] == 66 and len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
                 #print(f"updated unseen sensor! angle: {thetas[i]} new dist: {sensors[i]}")
 
