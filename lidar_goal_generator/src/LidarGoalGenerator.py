@@ -182,7 +182,7 @@ class LidarGoalGenerator:
             print(sensors[i])
             normalized_sensors[i] = np.log(sensors[i]+0.00001)/np.log(100) #this way gives more range to the smaller distances (large distances are less important).
             print(normalized_sensors[i])
-            normalized_sensors[i] = min(1.0,max(-1.0,sensors[i]))
+            normalized_sensors[i] = min(1.0,max(-1.0,normalized_sensors[i]))
             print(normalized_sensors[i])
         
         print(f"normalized sensors: {normalized_sensors}")
