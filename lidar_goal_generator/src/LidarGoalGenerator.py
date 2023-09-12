@@ -90,7 +90,7 @@ class LidarGoalGenerator:
         # The reference frame for the lidar is: x axis in front of robot (angle 0 in front, positive angle towards the left)
         dx = self.robot_dx
         dy = self.robot_dy
-        #print(f"dx: {dx} dy: {dy}")
+        print(f"dx: {dx} dy: {dy}")
         
         distances = np.array(scan_data.ranges)
         indexes = np.arange(0,distances.size)
@@ -155,13 +155,13 @@ class LidarGoalGenerator:
                 sensors[i] = min(distances_by_sensor[i])
                 self.x_objects[i] = math.cos(thetas[i])*sensors[i]
                 self.y_objects[i] = math.sin(thetas[i])*sensors[i]
-        #print(f"measured sensors: {np.round(sensors,2)}")
+        print(f"measured sensors: {np.round(sensors,2)}")
 
         #use obstacles positions to update old sensors
         object_angles = np.arctan2(self.y_objects, self.x_objects)
         object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
-        #print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
-        #print(f"object_distances: {object_distances}")
+        print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
+        print(f"object_distances: {object_distances}")
         for i, object_angle in enumerate(object_angles):
             ith_sensor = bisect(thetas,object_angle)
             distances_by_sensor[ith_sensor-1].append(object_distances[i])
@@ -171,7 +171,7 @@ class LidarGoalGenerator:
             if len(distances_by_sensor[i]) != 0:
                 sensors[i] = min(distances_by_sensor[i])
                 #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
-        #print(f"final sensors: {np.round(sensors,2)}")
+        print(f"final sensors: {np.round(sensors,2)}")
 
         #wait = input()
 
@@ -332,7 +332,7 @@ class LidarGoalGenerator:
 
         
     def run(self):
-        rate = rospy.Rate(8)  # 8 Hz
+        rate = rospy.Rate(1)  # 8 Hz
         initialized = False
         
         while not rospy.is_shutdown():
