@@ -254,12 +254,12 @@ class LidarGoalGenerator:
         print(f"dwa heading: {angle*180/np.pi}")
         #correcting for current yaw
         angle = angle - self.robot_yaw
-        print(f"turning angle: {angle}")
+        #print(f"turning angle: {angle}")
         if angle > np.pi:
             angle = angle - 2*np.pi
         elif angle < -np.pi:
             angle = 2*np.pi + angle
-        print(f"fastest angle: {angle}")
+        #print(f"fastest angle: {angle}")
         print(f"estimated yaw: {np.round(self.robot_yaw*180/np.pi,1)}")
         #print(f"wanted angle corrected for yaw: {np.round(angle*180/np.pi,1)}")
         v_front =  speed*math.cos(angle)
@@ -361,7 +361,7 @@ class LidarGoalGenerator:
 
         object_angles = np.arctan2(self.y_objects, self.x_objects)
 
-        object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
+        object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)+0.05
         #print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
         #print("                                     ")
         #print(f"measured sensors: {np.round(measured_sensors,2)}")
@@ -430,7 +430,7 @@ class LidarGoalGenerator:
                 local_goal = self.bug.predict(observation)
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
-                observation[0][0][self.unseen_idx==1] *=1.5 #give less importance to virtual objects for dwa (smaller margin)
+                observation[0][0][self.unseen_idx==1] *=1.3 #give less importance to virtual objects for dwa (smaller margin)
                 #observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 action = self.DWA.predict(observation, local_goal)
