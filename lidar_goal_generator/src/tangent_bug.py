@@ -171,7 +171,7 @@ class tangent_bug():
             command = self.calculate_pid_command(objects[closest_obstacle_idx])
             #print(f"PID command: {command}")
             tangent += command*self.tangent_direction
-            print(f"corrected tangent: {np.round(tangent*180/math.pi)}")
+            print(f"corrected tangent: {np.round(tangent*180/math.pi)}, tangent sign: {self.tangent_direction}")
             goal = [settings.mv_fw_spd_1*math.cos(tangent), settings.mv_fw_spd_1*math.sin(tangent)]
 
             object_to_avoid = segments[closest_obstacle_idx]

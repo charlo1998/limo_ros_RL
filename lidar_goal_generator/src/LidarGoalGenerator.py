@@ -255,7 +255,9 @@ class LidarGoalGenerator:
         #correcting for current yaw
         angle = angle - self.robot_yaw
         if angle > np.pi:
-            angle = np.pi - angle
+            angle = angle - 2*np.pi
+        elif angle < np.pi:
+            angle = 2*np.pi - angle
         print(f"estimated yaw: {np.round(self.robot_yaw*180/np.pi,1)}")
         #print(f"wanted angle corrected for yaw: {np.round(angle*180/np.pi,1)}")
         v_front =  speed*math.cos(angle)
