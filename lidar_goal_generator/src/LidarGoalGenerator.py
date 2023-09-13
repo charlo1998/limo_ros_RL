@@ -273,15 +273,12 @@ class LidarGoalGenerator:
         elif abs(angle) > np.pi/4: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.25
             angular = v_angular*1.5
-            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         elif abs(angle) > np.pi/6: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.45
             angular = v_angular*1.3
-            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         elif abs(angle) > np.pi/9: #if we are badly aligned with the goal, rotate and go slower
             linear = v_front*0.7
             angular = v_angular*1.2
-            print(f"aligning with the goal! need to rotate {np.round(angle*180/np.pi,1)} deg")
         else:
             angular = v_angular
             linear = v_front
@@ -361,8 +358,8 @@ class LidarGoalGenerator:
 
         object_distances = np.sqrt(self.x_objects**2+self.y_objects**2)
         #print(f"object angles: {np.round(object_angles*180/np.pi,1)}")
-        print("                                     ")
-        print(f"measured sensors: {np.round(measured_sensors,2)}")
+        #print("                                     ")
+        #print(f"measured sensors: {np.round(measured_sensors,2)}")
         #print(f"object_distances: {np.round(object_distances,2)}")
         print("                                     ")
 
@@ -377,7 +374,7 @@ class LidarGoalGenerator:
                 #print(f"updated unseen sensor! angle: {np.round(thetas[i]*180/np.pi,1)} new dist: {np.round(sensors[i],2)}")
             else:
                 object_sensors[i] = 66
-        print(f"obstacle sensors: {np.round(object_sensors,2)}")
+        #print(f"obstacle sensors: {np.round(object_sensors,2)}")
 
         #3) update sensors and seen objects with ground truth
         for i in range(self.nb_of_sensors):
@@ -411,7 +408,7 @@ class LidarGoalGenerator:
             if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven't yet read data
                 
                 print(f"Robot pose: [x,y] = {[np.round(self.robot_x,2), np.round(self.robot_y,2)]}")
-                print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
+                #print(f"Goal [x,y]: {[np.round(self.goal_x,2), np.round(self.goal_y,2)]}")
                 #save state in another variable so that it doesn't get overwritten by the subscriber mid-process
                 observation = self.state.copy()
                 observation = self.update_obstacles(observation)

@@ -116,7 +116,7 @@ class gofai():
         y_objects = np.array(y_objects)
             
         
-        print(f"dwa objects: {np.round(objects,1)}")
+        #print(f"dwa objects: {np.round(objects,1)}")
         #print(orientations)
         #print(len(objects))
         if len(objects) == 0: #if there is no obstacles, go straight to the goal at max speed

@@ -73,7 +73,7 @@ class tangent_bug():
         print(f"received sensors: {np.round(sensors,2)}")
         for i, sensor in enumerate(sensors):
             if sensor > 10 and self.objects_last_updated[i] < 6:
-                self.objects_last_updated[i] += 1.5
+                self.objects_last_updated[i] += 0.5 #try to reduce this value as much as possible, test with u-shaped obstacle
                 sensors[i] = self.previous_obs[i]+1.0 #set it to a somewhat far distance so that the robot is incentivized to look at it
             else:
                 self.objects_last_updated[i] = 0
@@ -131,8 +131,8 @@ class tangent_bug():
 
         if foundPath == False and self.following_boundary == False:
             direction = math.pi/2 - goal_angle
-            print(f"best_idx angle: {orientations[best_idx]}")
-            print(f"direction: {direction}")
+            #print(f"best_idx angle: {orientations[best_idx]}")
+            #print(f"direction: {direction}")
             if objects[best_idx] < goal_distance:
                 self.foundPathCounter += 1
                 print("heuristic increased, go straight into goal, counter increased for boundary following")
@@ -419,10 +419,10 @@ class tangent_bug():
         # Bound PID output
         if pid_output < -1: #don't go over pi/2 correction -> asin(1 or -1)
             pid_output = -1
-            print("PID saturated")
+            #print("PID saturated")
         elif pid_output > 1:
             pid_output = 1
-            print("PID saturated")
+            #print("PID saturated")
 
         # Store last error and elapsed time
         self.last_error = error
