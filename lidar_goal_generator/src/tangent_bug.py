@@ -21,7 +21,7 @@ class tangent_bug():
         self.max_dist = 10
         
         self.foundPathCounter = 0
-        self.tangent_direction = -1
+        self.tangent_direction = 1 #1 for left, -1 for right
         self.tangent_counter = 0
         self.normalize = True
 
