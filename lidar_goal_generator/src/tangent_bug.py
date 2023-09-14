@@ -379,7 +379,7 @@ class tangent_bug():
                     for i in range(left, right):
                         temp_objects[i] = min(objects[left], objects[right])
                         #print(f"filled in gap for sensor {i}")
-                else:
+                elif right < left: #if left == right its about to erase all objects, so do nothing
                     for i in range(right, left):
                         temp_objects[i] = min(objects[left], objects[right])
                         #print(f"filled in gap for sensor {i}")
