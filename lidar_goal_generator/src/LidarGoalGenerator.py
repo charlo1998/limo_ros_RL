@@ -440,12 +440,12 @@ class LidarGoalGenerator:
                 #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 end = time.perf_counter()
-                #print(f"dwa process time: {np.round(mid-start,3)}")
+                print(f"dwa process time: {np.round(mid-start,3)}")
                 
                 print("-------------------------------------------------")
                 
 
-                self.publish_velocity(linear, angular)  # P-controller for angular velocity
+                #self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
             end = time.perf_counter()
