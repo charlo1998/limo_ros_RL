@@ -138,8 +138,8 @@ class gofai():
 
             #computing new distance to goal
             travel_speed = min(2, settings.base_speed*3**(i//settings.action_discretization)) #travelling speed can be 0.1, 0.3, 0.9 m/s
-            x_dest = settings.mv_fw_dur*(0.66*travel_speed*math.cos(theta) + 0.33*vel_norm*math.cos(vel_angle)) # correcting for current speed since change in speed isn't instantaneous
-            y_dest = settings.mv_fw_dur*(0.66*travel_speed*math.sin(theta) + 0.33*vel_norm*math.sin(vel_angle))
+            x_dest = settings.mv_fw_dur*(0.8*travel_speed*math.cos(theta) + 0.25*vel_norm*math.cos(vel_angle)) # correcting for current speed since change in speed isn't instantaneous
+            y_dest = settings.mv_fw_dur*(0.8*travel_speed*math.sin(theta) + 0.25*vel_norm*math.sin(vel_angle))
 
             new_dist = np.sqrt((x_goal-x_dest)**2+(y_goal-y_dest)**2)
             #computing the closest obstacle to the trajectory
@@ -171,8 +171,8 @@ class gofai():
 
         ### -----------printing info on the chosen action-------------------------------------------------------------
         travel_speed = min(2, settings.base_speed*3**(action//settings.action_discretization)) #travelling speed can be 0.1, 0.3, 0.9 m/s
-        x_dest = settings.mv_fw_dur*(0.66*travel_speed*math.cos(direction) + 0.33*vel_norm*math.cos(vel_angle))  + x_pos # correcting for current speed since change in speed isn't instantaneous
-        y_dest = settings.mv_fw_dur*(0.66*travel_speed*math.sin(direction) + 0.33*vel_norm*math.sin(vel_angle)) + y_pos
+        x_dest = settings.mv_fw_dur*(0.80*travel_speed*math.cos(direction) + 0.25*vel_norm*math.cos(vel_angle))  + x_pos # correcting for current speed since change in speed isn't instantaneous
+        y_dest = settings.mv_fw_dur*(0.80*travel_speed*math.sin(direction) + 0.25*vel_norm*math.sin(vel_angle)) + y_pos
         #print(f"dwa desired angle: {np.round(direction*180/math.pi,1)}")
         #print(f"current speed: {[np.round(vel_norm,1), np.round(vel_angle*180/np.pi,1)]}")
         #print(f"min distance in chosen trajectory: {np.round(minDist,5)}")
