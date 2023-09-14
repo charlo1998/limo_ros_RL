@@ -116,7 +116,7 @@ class gofai():
         y_objects = np.array(y_objects)
             
         
-        print(f"dwa objects: {np.round(objects,1)}")
+        #print(f"dwa objects: {np.round(objects,1)}")
         #print(orientations)
         #print(len(objects))
         if len(objects) == 0: #if there is no obstacles, go straight to the goal at max speed
@@ -166,7 +166,7 @@ class gofai():
 
         self.previous_obs = sensors
         #print(f"min predicted distance in chosen dwa action: {np.round(mindistAction,2)}")
-        print(f"heading term: {np.round(headingTerm,2)} safety term: {np.round(safetyTerm,2)}")
+        #print(f"heading term: {np.round(headingTerm,2)} safety term: {np.round(safetyTerm,2)}")
         #print(f"full loop action: {action}")
 
         ### -----------printing info on the chosen action-------------------------------------------------------------
