@@ -18,8 +18,8 @@ import time
 from os import path
 
 #RL libraries
-import torch
-from model import PyTorchMlp
+#import torch
+#from model import PyTorchMlp
 
 class LidarGoalGenerator:
     def __init__(self, filepath):
@@ -28,10 +28,12 @@ class LidarGoalGenerator:
         #RL agent setup
         self.nb_of_sensors = settings.number_of_sensors
         self.state = np.zeros((1, 1, 4 + 2 + settings.number_of_sensors)) #todo: check if it works with only a list
-        self.model = PyTorchMlp()
-        self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
-        self.model.eval()
-        self.RL = True #switch between pytorch and cost function
+        
+        self.RL = False #switch between pytorch and cost function
+        if self.RL:
+            self.model = PyTorchMlp()
+            self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
+            self.model.eval()
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
