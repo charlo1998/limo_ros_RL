@@ -438,7 +438,7 @@ class LidarGoalGenerator:
                 print(f"bug local goal [x,y]: {[np.round(local_goal[0],2), np.round(local_goal[1],2)]}")
                 print("--------------- bug end -------------------")
                 observation[0][0][self.unseen_idx==1] *=1.75 #give less importance to virtual objects for dwa (smaller margin)
-                #observation = self.apply_mask(observation, chosen_sectors)
+                observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
                 startCPU = time.process_time_ns()
                 action = self.DWA.predict(observation, local_goal)
