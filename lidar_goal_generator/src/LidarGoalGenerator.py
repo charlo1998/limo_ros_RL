@@ -456,12 +456,8 @@ class LidarGoalGenerator:
                 #self.publish_velocity(linear, angular)  # P-controller for angular velocity
             else:
                 self.publish_velocity(0.0, 0.0)
-            end = time.perf_counter()
-            endCPU = time.process_time_ns()
             #print(f"processing time: {(end-start)*1000} ms")
             #print(f"CPU processing time: {(endCPU-startCPU)/1000} muS")
-            self.processing_times.append(end-start)
-            self.CPU_processing_times.append(endCPU-startCPU)
             initialized=True
 
             #waiting for human input to take another step
