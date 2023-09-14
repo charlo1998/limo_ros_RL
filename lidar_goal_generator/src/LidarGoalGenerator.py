@@ -18,8 +18,8 @@ import time
 from os import path
 
 #RL libraries
-#import torch
-#from model import PyTorchMlp
+import torch
+from model import PyTorchMlp
 
 class LidarGoalGenerator:
     def __init__(self, filepath):
@@ -28,10 +28,10 @@ class LidarGoalGenerator:
         #RL agent setup
         self.nb_of_sensors = settings.number_of_sensors
         self.state = np.zeros((1, 1, 4 + 2 + settings.number_of_sensors)) #todo: check if it works with only a list
-        #self.model = PyTorchMlp()
-        #self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
-        #self.model.eval()
-        self.RL = False #switch between pytorch and cost function
+        self.model = PyTorchMlp()
+        self.model.load_state_dict(torch.load('torch_A2C_model.pt')) #put the model in the working directory
+        self.model.eval()
+        self.RL = True #switch between pytorch and cost function
         #self.model = A2C.load(filepath)
         self.DWA = gofai()
         self.bug = tangent_bug()
@@ -408,8 +408,7 @@ class LidarGoalGenerator:
         while not rospy.is_shutdown():
             self.publish_goal(1,0.5)
 
-            start = time.perf_counter()
-            startCPU = time.process_time_ns()
+            
             if self.navigating_to_goal and initialized: # we want to skip the first iteration as the subscribers haven't yet read data
                 
                 print(f"Robot pose: [x,y] = {[np.round(self.robot_x,2), np.round(self.robot_y,2)]}")
@@ -421,7 +420,13 @@ class LidarGoalGenerator:
                 self.observations.append(observation)
 
                 if self.RL:
-                    chosen_sectors = self.model(torch.from_numpy(observation).float()) #inference profiling
+                    torch_observation = torch.from_numpy(observation).float()
+                    inference = time.perf_counter()
+                    inferenceCPU = time.process_time_ns()
+                    for i in range(100):
+                        chosen_sectors = self.model(torch_observation) #inference profiling
+                    print(f"inference time: {np.round((time.perf_counter()-inference)*1000/100,1)} ms")
+                    print(f"inference CPU time: {np.round((time.process_time_ns()-inferenceCPU)/1000000/100,3)} ms")
                 else:
                     chosen_sectors = cost_function(observation) #performance profiling (closer to real agent behavior)
                     
@@ -433,14 +438,17 @@ class LidarGoalGenerator:
                 observation[0][0][self.unseen_idx==1] *=1.75 #give less importance to virtual objects for dwa (smaller margin)
                 observation = self.apply_mask(observation, chosen_sectors)
                 start = time.perf_counter()
+                startCPU = time.process_time_ns()
                 action = self.DWA.predict(observation, local_goal)
                 [linear, angular] = self.action2velocity(action) #convert to linear and angular commands
                 print(f"angular vel: {np.round(angular,2)} linear vel: {np.round(linear,2)}")
                 mid = time.perf_counter()
+                midCPU = time.process_time_ns()
                 #velocitiy_commands = DWA(self.state, local_goal, self.config, self.robot_yaw)
                 #print(f"angular vel: {velocitiy_commands[1]} linear vel: {velocitiy_commands[0]} for wheeled dwa")
                 end = time.perf_counter()
-                print(f"dwa process time: {np.round(mid-start,3)}")
+                print(f"dwa process time: {np.round((mid-start)*1000,1)} ms")
+                print(f"dwa CPU time: {np.round((midCPU-startCPU)/1000000,3)} ms")
                 
                 print("-------------------------------------------------")
                 
