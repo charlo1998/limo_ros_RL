@@ -31,7 +31,7 @@ class gofai():
 
     def __init__(self):
         self.arc = 2*math.pi/settings.number_of_sensors #rad
-        self.heading_coeff = 2
+        self.heading_coeff = 2.5
         self.safety_coeff = 0.4
         self.safety_dist = 0.75
         self.previous_obs = [3]*(settings.number_of_sensors+6)
