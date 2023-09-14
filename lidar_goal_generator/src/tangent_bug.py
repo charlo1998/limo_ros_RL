@@ -141,7 +141,7 @@ class tangent_bug():
             goal = [goal_distance*math.cos(direction), goal_distance*math.sin(direction)]
 
         #if the heuristic didn't decrease after last couple actions, we need to enter into boundary following
-        if self.foundPathCounter >= 3 and not self.following_boundary:
+        if self.foundPathCounter >= 6 and not self.following_boundary:
             print("entering boundary following")
             self.following_boundary = True
             self.following_boundary_counter=0
