@@ -70,7 +70,7 @@ class tangent_bug():
         #any distance greater than the treshold will be ceiled.
 
         #print(f"previous obs: {np.round(self.previous_obs,2)}")
-        print(f"received sensors: {np.round(sensors,2)}")
+        #print(f"received sensors: {np.round(sensors,2)}")
         for i, sensor in enumerate(sensors):
             if sensor > 10 and self.objects_last_updated[i] < 6:
                 self.objects_last_updated[i] += 0.5 #try to reduce this value as much as possible, test with u-shaped obstacle
